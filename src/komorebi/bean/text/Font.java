@@ -2,9 +2,9 @@ package komorebi.bean.text;
 
 public abstract class Font {
 
-  public int scale;
+  public float scale;
   
-  public Font(int scale)
+  public Font(float scale)
   {
     this.scale = scale;
   }
@@ -16,12 +16,12 @@ public abstract class Font {
   public abstract int getLength(char c);
   public abstract int getTexture();
   
-  public int getFontPoint()
+  public float getFontPoint()
   {
     return scale;
   }
   
-  public int getScale()
+  public float getScale()
   {
     return scale; 
   }

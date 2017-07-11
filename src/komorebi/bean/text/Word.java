@@ -62,7 +62,7 @@ public class Word {
     y += dy;
   }
   
-  public int getFontSize()
+  public float getFontSize()
   {
     return font.getScale();
   }

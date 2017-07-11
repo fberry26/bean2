@@ -46,4 +46,9 @@ public class Image {
   {
     return texture;
   }
+  
+  public String toString()
+  {
+    return texx + ", " + texy + ", " + width + ", " + height;
+  }
 }

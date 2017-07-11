@@ -45,6 +45,7 @@ public class GameHandler {
   public static void getInput()
   {
     KeyHandler.getInput();
+    MouseHandler.getInput();
     state.getInput();
   }
   

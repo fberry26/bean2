@@ -4,7 +4,7 @@ import komorebi.bean.graphics.Draw;
 
 public class BeanFont extends Font {
 
-  public BeanFont(int scale) {
+  public BeanFont(float scale) {
     super(scale);
   }
 
@@ -78,11 +78,6 @@ public class BeanFont extends Font {
   @Override
   public int getTexSy(char c) {
     return 12;
-  }
-
-  @Override
-  public int getFontPoint() {
-    return scale;
   }
 
   @Override
