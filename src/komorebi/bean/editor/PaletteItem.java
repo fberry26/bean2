@@ -2,34 +2,50 @@ package komorebi.bean.editor;
 
 import java.awt.Point;
 
+import komorebi.bean.editor.objects.HorizontalSpikeStrip;
+import komorebi.bean.editor.objects.Ladder;
+import komorebi.bean.editor.objects.OnePerLevelObject;
+import komorebi.bean.editor.objects.OnePerLevelObject.Bean;
+import komorebi.bean.editor.objects.OnePerLevelObject.Flag;
+import komorebi.bean.editor.objects.Piston;
+import komorebi.bean.editor.objects.Platform;
+import komorebi.bean.editor.objects.SingleTileObject;
+import komorebi.bean.editor.objects.TileObject;
+import komorebi.bean.editor.objects.Treadmill;
+import komorebi.bean.editor.objects.VerticalSpikeStrip;
+import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
 
 public enum PaletteItem {
   
-  BLOCK(Tile.BLOCK), BEAN(Tile.BEAN), FLAG(Tile.FLAG),
-  BUTTON(Tile.BUTTON), 
+  BLOCK(SingleTileObject.factory(), Tile.BLOCK), 
+  BEAN(SingleTileObject.factory(), Tile.BEAN), 
+  FLAG(SingleTileObject.factory(), Tile.FLAG),
+  BUTTON(SingleTileObject.factory(), Tile.BUTTON), 
   SPIKE_UP(Orientation.HORIZONTAL, 
-      new HorizontalSpikeStrip(false), Tile.SPIKE_ALONE_UP),
-  SPIKE_RIGHT(Orientation.VERTICAL, new VerticalSpikeStrip(false),
+      new HorizontalSpikeStrip(null, false), Tile.SPIKE_ALONE_UP),
+  SPIKE_RIGHT(Orientation.VERTICAL, new VerticalSpikeStrip(null, false),
       Tile.SPIKE_ALONE_RIGHT), 
-  SPIKE_DOWN(Orientation.HORIZONTAL, new HorizontalSpikeStrip(true),
+  SPIKE_DOWN(Orientation.HORIZONTAL, new HorizontalSpikeStrip(null, true),
       Tile.SPIKE_ALONE_DOWN),
-  SPIKE_LEFT(Orientation.VERTICAL, new VerticalSpikeStrip(true),
+  SPIKE_LEFT(Orientation.VERTICAL, new VerticalSpikeStrip(null, true),
       Tile.SPIKE_ALONE_LEFT), 
-  TURRET_LEFT(Tile.TURRET_LEFT), 
-  TURRET_RIGHT(Tile.TURRET_RIGHT),
-  LADDER(Tile.LADDER), GATE_HORIZ(Tile.GATE_HORIZ),
-  PISTON(Orientation.VERTICAL, new Piston(), Tile.PISTON_MID, Tile.PISTON_END),
-  TREADMILL(Orientation.HORIZONTAL, new Treadmill(), 
+  TURRET_LEFT(SingleTileObject.factory(), Tile.TURRET_LEFT), 
+  TURRET_RIGHT(SingleTileObject.factory(), Tile.TURRET_RIGHT),
+  LADDER(Orientation.VERTICAL, new Ladder(null), Tile.LADDER), 
+  GATE_HORIZ(SingleTileObject.factory(), Tile.GATE_HORIZ),
+  PISTON(Orientation.VERTICAL, new Piston(null), Tile.PISTON_MID, Tile.PISTON_END),
+  TREADMILL(Orientation.HORIZONTAL, new Treadmill(null), 
       Tile.TREADMILL_L, Tile.TREADMILL_R),
-  GATE_VERT(Tile.GATE_VERT), 
-  PLATFORM(Tile.PLATFORM);
-  ;
+  GATE_VERT(SingleTileObject.factory(), Tile.GATE_VERT), 
+  PLATFORM(Orientation.HORIZONTAL, new Platform(null), Tile.PLATFORM_LEFT, 
+      Tile.PLATFORM_RIGHT);
   
   Tile[] tiles;
   boolean groupHorizontally;
   
-  private MultiTileObject factory;
+  private TileObject factory;
+  private boolean enabled = true;
 
   private enum Orientation
   {
@@ -41,7 +57,12 @@ public enum PaletteItem {
     this(Orientation.HORIZONTAL, null, tiles);
   }
   
-  private PaletteItem(Orientation orientation, MultiTileObject factory,
+  private PaletteItem(TileObject factory, Tile...tiles)
+  {
+    this(Orientation.HORIZONTAL, factory, tiles);
+  }
+  
+  private PaletteItem(Orientation orientation, TileObject factory,
       Tile...tiles)
   {
     this.tiles = tiles;
@@ -70,14 +91,17 @@ public enum PaletteItem {
   
   public boolean isMultiTileObject()
   {
-    return tiles.length != 1 || this == SPIKE_RIGHT ||
-        this == SPIKE_LEFT || this == SPIKE_UP ||
-        this == SPIKE_DOWN;
+    return factory != null && factory != SingleTileObject.factory();
   }
   
   public Tile getTile(int i)
   {
     return tiles[i];
+  }
+  
+  public boolean onlyOnePermittedPerLevel()
+  {
+    return this == FLAG || this == BEAN;
   }
   
   private static Tile[][] palette = initializePalette();
@@ -128,6 +152,22 @@ public enum PaletteItem {
     return null;
   }
   
+  public static Class<? extends OnePerLevelObject> getOnePerLevelClass(
+      PaletteItem pal)
+    throws RuntimeException
+  {
+    switch (pal)
+    {
+      case BEAN:
+        return Bean.class;
+      case FLAG:
+        return Flag.class;
+      default:
+        throw new RuntimeException(pal + " is not limited to one per level");
+    }
+      
+  }
+  
   public static Point topLeftOf(PaletteItem pItem)
   {
     for (int i = 0; i < palette.length; i++)
@@ -144,8 +184,60 @@ public enum PaletteItem {
     return new Point(0, 0);
   }
   
-  public MultiTileObject buildObject(int tx, int ty)
+  public TileObject buildObject(ModRectangle area)
   {
-    return factory.build(tx, ty);
+    return factory.build(this, area);
   }
+  
+  public ModRectangle createRectangleAt(int tx, int ty)
+  {
+    
+    int x = tx;
+    int y = isGroupedHorizontally()?ty:ty-getNumberOfTiles()+1;
+    
+    return new ModRectangle(x, y, getWidth(), getHeight());
+  }
+  
+  public ModRectangle createRectangleAt(Point point)
+  {
+    return createRectangleAt(point.x, point.y);
+  }
+  
+  public int getWidth()
+  {
+    return isGroupedHorizontally()?getNumberOfTiles():1;
+  }
+  
+  public int getHeight()
+  {
+    return isGroupedHorizontally()?1:getNumberOfTiles();
+  }
+  
+  public static boolean isPaletteItemEnabled(Tile tile)
+  {    
+    PaletteItem item = getItemContainingTile(tile);
+    return item.isEnabled();
+  }
+  
+  public void setEnabled(boolean bool)
+  {
+    enabled = bool;
+  }
+  
+  public boolean isEnabled()
+  {
+    return enabled;
+  }
+  
+  public static void setAreOnePerLevelObjectsEnabled(boolean bool)
+  {
+    for (PaletteItem pal: values())
+    {
+      if (pal.onlyOnePermittedPerLevel())
+      {
+        pal.setEnabled(bool);
+      }
+    }
+  }
+  
 }

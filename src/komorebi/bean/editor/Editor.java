@@ -1,67 +1,78 @@
 package komorebi.bean.editor;
 
-import org.lwjgl.input.Mouse;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.util.ArrayList;
 
+import komorebi.bean.editor.attributes.AttributeWindow;
+import komorebi.bean.editor.objects.TileObject;
+import komorebi.bean.editor.tools.clickanddrag.MultiSelection;
 import komorebi.bean.engine.GameHandler;
 import komorebi.bean.engine.GameHandler.State;
 import komorebi.bean.engine.GameHandler.States;
 import komorebi.bean.engine.Key;
 import komorebi.bean.engine.KeyHandler;
 import komorebi.bean.engine.Main;
+import komorebi.bean.engine.MouseHandler;
 import komorebi.bean.game.Tile;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
-import komorebi.bean.graphics.Image;
 
 public class Editor implements State {
   
   public static final int WIDTH = 384, HEIGHT = 272;
   public static final int MAP_WIDTH = 20, MAP_HT = 16;
   
+  public static final Rectangle MAP = new Rectangle(0, 0, MAP_WIDTH, MAP_HT);
+  
+  private static boolean gridOn = true;
+  
   private Palette palette;
-  private EditorLevel level;
-  
-  private int currentMouseMode;
-  private MouseMode[] mouseModes = new MouseMode[3];
-  
-  private Image[] editorFunctions = 
-    {Graphics.PENCIL, Graphics.MOUSE_POINTER, Graphics.DELETE_X};
+  private static EditorLevel level;
+  private Toolbar toolbar;
+
+  public static final Dimension TILE_MODSPACE = new Dimension(20, 16);
+  public static final Dimension MODSPACE = new Dimension(320, 256);
+  private static MultiSelection selection = new MultiSelection();
   
   public Editor()
   {
     palette = new Palette();
     level = new EditorLevel();
-    
-    mouseModes[0] = new PencilMode(level, palette);
-    mouseModes[1] = new ClickAndDragMode(level);
-    mouseModes[2] = new EraserMode(level);
+    toolbar = new Toolbar(level, palette);
+       
   }
   
   @Override
   public void getInput() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void update() {
     //TODO Debug
-    
     if (KeyHandler.keyClick(Key.ENTER))
     {
       Main.adjustScreenSize(false);
       GameHandler.setState(States.TITLE);
     }
     
-    if (KeyHandler.controlDown())
-      if (KeyHandler.keyClick(Key.RIGHT))
-        nextMouseMode();
-      else if (KeyHandler.keyClick(Key.LEFT))
-        previousMouseMode();
+    if (KeyHandler.keyClick(Key.G))
+    {
+      toggleGrid();
+    }
     
-    mouseModes[currentMouseMode].update();
+    if (KeyHandler.keyClick(Key.DEL) && hasSelections())
+    {
+      deleteAllItemsWithinSelection();
+      clearSelection();
+    }
+    
+    toolbar.update();
     palette.update();
     
+    AttributeWindow.update();
+        
     if (KeyHandler.keyClick(Key.C))
     {
       Tile.nextColor();
@@ -73,6 +84,36 @@ public class Editor implements State {
   public void render() {
     Draw.fill(Graphics.GREY_BACKGROUND, 0, 0, WIDTH, HEIGHT);
     
+    if (gridOn)
+    {
+      drawGrid();
+    }
+    
+    Draw.draw(Graphics.EDITOR_FILE_BUTTONS, 0, MAP_HT*16);
+    
+
+    if (onButtons())
+    {
+      Draw.draw(Graphics.BUTTON_HOVER_SQUARE, MouseHandler.getTx()*16, MAP_HT*16,
+          0.5f, 0);
+    }
+    
+    palette.render();
+    level.render();
+    toolbar.render();
+    
+    AttributeWindow.render();
+    
+    selection.render();    
+  }
+
+  @Override
+  public void gainFocus() {
+    
+  }
+  
+  private void drawGrid()
+  {
     for (int i = 0; i < MAP_HT; i++)
     {
       for (int j = 0; j < MAP_WIDTH; j++)
@@ -80,36 +121,6 @@ public class Editor implements State {
         Draw.draw(Graphics.GRID, j*16, i*16, 1, 0);
       }
     }
-    
-    Draw.draw(Graphics.EDITOR_BUTTONS, 0, MAP_HT*16);
-    
-    for (int i = 0; i < editorFunctions.length; i++)
-    {
-      if (currentMouseMode == i)
-      {
-        Draw.fill(Graphics.BLUE_SELECTED_FUNCTION, 
-            (MAP_WIDTH-editorFunctions.length+i)*16, MAP_HT*16, 16, 16);
-      }
-      Draw.draw(editorFunctions[i], (MAP_WIDTH-editorFunctions.length+i)*16, 
-          MAP_HT*16);
-    }
-
-    if (onButtons())
-    {
-      Draw.draw(Graphics.BUTTON_HOVER_SQUARE, getMouseTx()*16, MAP_HT*16,
-          0.5f, 0);
-    }
-    
-    palette.render();
-    level.render();
-    mouseModes[currentMouseMode].render();
-       
-  }
-
-  @Override
-  public void gainFocus() {
-    // TODO Auto-generated method stub
-    
   }
   
   /**
@@ -118,36 +129,53 @@ public class Editor implements State {
    */
   private static boolean onButtons()
   {
-    return (getMouseTy()==MAP_HT && getMouseTx() < 4);
+    return (MouseHandler.getTy()==MAP_HT && MouseHandler.getTx() < 4);
 
   }
   
-  public static int getMouseTx()
+  
+  public static void toggleGrid()
   {
-    return (int) ((float) Mouse.getX()/Main.scale) / 16;
+    gridOn = !gridOn;
   }
   
-  public static int getMouseTy()
+  
+  public static MultiSelection getSelection()
   {
-    return (int) ((float) Mouse.getY()/Main.scale) / 16;
+    return selection;
   }
   
-  private void nextMouseMode()
+  public static void clearSelection() 
   {
-    currentMouseMode++;
-    if (currentMouseMode >= mouseModes.length)
+    selection.clear();
+  }
+  
+  public static boolean hasSelections()
+  {
+    return !selection.isEmpty();
+  }
+  
+  public static boolean mouseInMap()
+  {
+    return MouseHandler.getTx() < MAP_WIDTH && 
+        MouseHandler.getTy() < MAP_HT;
+  }
+  
+  private void deleteAllItemsWithinSelection()
+  {
+    ArrayList<TileObject> eraseThese = level.allObjectsWithin(selection);
+    
+    for (TileObject erase: eraseThese)
     {
-      currentMouseMode = 0;
+      level.removeObject(erase);
     }
   }
   
-  private void previousMouseMode()
+  public static EditorLevel level()
   {
-    currentMouseMode--;
-    if (currentMouseMode < 0)
-    {
-      currentMouseMode = mouseModes.length - 1;
-    }
+    return level;
   }
+  
+  
 
 }

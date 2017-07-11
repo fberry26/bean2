@@ -99,6 +99,11 @@ public class Animation {
   {
     add(image, Draw.ROTATE_NONE, false);
   }
+  
+  public void update()
+  {
+    increment();
+  }
 
 
   /**
@@ -109,10 +114,14 @@ public class Animation {
    */
   public void render(float x, float y){
 
+    renderNoIncrement(x, y);
+    increment();
+  }
+  
+  public void renderNoIncrement(float x, float y)
+  {
     Draw.draw(images[currFrame], x, y, scale, rot[currFrame], 
         flipped[currFrame]);
-
-    increment();
   }
 
   /*
@@ -125,7 +134,7 @@ public class Animation {
       if(counter > time){
         counter = 0;
         currFrame++;
-        if(currFrame > frames){
+        if(currFrame >= frames){
           if (onlyOnce)
           {
             hStop();
@@ -182,7 +191,7 @@ public class Animation {
    */
   public boolean lastFrame()
   {
-    return (currFrame == frames);
+    return (currFrame == frames - 1);
   }
 
   public void reset()

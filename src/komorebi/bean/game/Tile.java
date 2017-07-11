@@ -4,20 +4,21 @@ import static komorebi.bean.graphics.Graphics.BUTTON_UP;
 import static komorebi.bean.graphics.Graphics.GATE_UP;
 import static komorebi.bean.graphics.Graphics.RED;
 
-import komorebi.bean.editor.PaletteItem;
+import java.awt.Point;
+
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 import komorebi.bean.graphics.Image;
 
 public enum Tile {
 
-  //ROW 1
   BLOCK(Graphics.SQUARES[RED]), BEAN(Graphics.BEAN[RED]), 
-  FLAG(Graphics.FLAG), BUTTON(Graphics.BUTTONS[BUTTON_UP][RED]), 
+  FLAG(Graphics.FLAG, new Point(2, 0)), 
+  BUTTON(Graphics.BUTTONS[BUTTON_UP][RED], new Point(4, 0)), 
   TURRET_LEFT(Graphics.TURRET), TURRET_RIGHT(Graphics.TURRET, true),
-  GATE_VERT(Graphics.GATE[GATE_UP][RED]), 
+  GATE_VERT(Graphics.GATE[GATE_UP][RED], new Point(6, 0)), 
   GATE_HORIZ(Graphics.GATE[GATE_UP][RED],
-      Draw.ROTATE_CLOCKWISE),
+      Draw.ROTATE_CLOCKWISE, new Point(0, 6)),
   LADDER(Graphics.LADDER[RED]), 
   PISTON_MID(Graphics.PISTON[Graphics.PISTON_MID][RED]),
   TREADMILL_L(Graphics.TREADMILL[Graphics.TREADMILL_L][0]), 
@@ -52,12 +53,14 @@ public enum Tile {
       Draw.ROTATE_COUNTERCLOCKWISE), 
   SPIKE_ALONE_LEFT(Graphics.SPIKES[Graphics.SPIKE_ALONE][RED], 
       Draw.ROTATE_COUNTERCLOCKWISE),
-  PLATFORM(Graphics.PLATFORM[RED]),
+  PLATFORM_LEFT(Graphics.PLATFORM[Graphics.PLATFORM_L][RED], new Point(6,0)), 
+  PLATFORM_RIGHT(Graphics.PLATFORM[Graphics.PLATFORM_R][RED]),
   BLANK(null);
   
   private Image image;
   private boolean flip;
   private int rot;
+  private Point offset;
   
   private Tile(Image image)
   {
@@ -79,6 +82,20 @@ public enum Tile {
     this.image = image;
     this.rot = rot;
     this.flip = flip;
+    
+    offset = new Point(0, 0);
+  }
+  
+  private Tile(Image image, Point offset)
+  {
+    this(image, Draw.ROTATE_NONE, false);
+    this.offset = offset;
+  }
+  
+  private Tile (Image image, int rot, Point offset)
+  {
+    this(image, rot, false);
+    this.offset = offset;
   }
   
   private static int color = 0;
@@ -89,7 +106,7 @@ public enum Tile {
       SPIKE_L_DOWN, SPIKE_C_DOWN, SPIKE_R_DOWN, SPIKE_ALONE_DOWN, 
       SPIKE_L_RIGHT, SPIKE_C_RIGHT, SPIKE_R_RIGHT, SPIKE_ALONE_RIGHT, 
       SPIKE_L_LEFT, SPIKE_C_LEFT, SPIKE_R_LEFT, SPIKE_ALONE_LEFT, 
-      PLATFORM};
+      PLATFORM_LEFT};
 
   public static void nextColor()
   {
@@ -144,8 +161,11 @@ public enum Tile {
         case SPIKE_ALONE_RIGHT:          
           object.setImage(Graphics.SPIKES[Graphics.SPIKE_ALONE][color]);
           break;
-        case PLATFORM:
-          object.setImage(Graphics.PLATFORM[color]);
+        case PLATFORM_LEFT:
+          object.setImage(Graphics.PLATFORM[Graphics.PLATFORM_L][color]);
+          break;
+        case PLATFORM_RIGHT:
+          object.setImage(Graphics.PLATFORM[Graphics.PLATFORM_R][color]);
           break;
         default: break;
       }
@@ -175,5 +195,10 @@ public enum Tile {
   public static int getColor()
   {
     return color;
+  }
+  
+  public void drawTile(int x, int y)
+  {
+    Draw.draw(image, x+offset.x, y+offset.y, rot, flip);
   }
 }

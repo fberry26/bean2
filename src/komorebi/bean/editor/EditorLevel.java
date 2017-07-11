@@ -1,59 +1,164 @@
 package komorebi.bean.editor;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
-import komorebi.bean.game.Tile;
-import komorebi.bean.graphics.Draw;
+import komorebi.bean.editor.objects.ExtendableObject;
+import komorebi.bean.editor.objects.MultiTileObject;
+import komorebi.bean.editor.objects.OnePerLevelObject;
+import komorebi.bean.editor.objects.SingleTileObject;
+import komorebi.bean.editor.objects.TileObject;
+import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.editor.tools.clickanddrag.Selection;
 
 public class EditorLevel {
 
-  private Tile[][] tiles;
-  private ArrayList<MultiTileObject> multiTileObjects;
-  
-  
+  CategorizedSet<TileObject> allObjects;
+
   public EditorLevel()
   {
-    tiles = new Tile[Editor.MAP_HT][Editor.MAP_WIDTH];
-    multiTileObjects = new ArrayList<MultiTileObject>();
-    
-    for (int i = 0; i < tiles.length; i++)
-    {
-      for (int j = 0; j <tiles[i].length; j++)
-      {
-        tiles[i][j] = Tile.BLANK;
-      }
-    }
+    allObjects = new CategorizedSet<TileObject>(TileObject.class);
   }
-  
+
   public void render()
-  {
-    for (int i = 0; i < tiles.length; i++)
-    {
-      for (int j = 0; j < tiles[i].length; j++)
-      {
-        if (tiles[i][j] != Tile.BLANK)
-          Draw.draw(tiles[i][j].getImage(), j*16, i*16);
-      }
-    }
-    
-    for (MultiTileObject obj: multiTileObjects)
+  { 
+    for (TileObject obj: allObjects)
     {
       obj.render();
     }
   }
-  
-  public Tile[][] getTiles()
+
+  public void addObject(TileObject object)
   {
-    return tiles;
+    allObjects.add(object);
+  }
+
+  public HashSet<MultiTileObject> getMultiTileObjects()
+  {
+    return allObjects.getAllOfType(MultiTileObject.class);
+  }
+
+  public HashSet<SingleTileObject> getSingleTileObjects()
+  {
+    return allObjects.getAllOfType(SingleTileObject.class);
+  }
+
+  public HashSet<TileObject> getAllObjects()
+  {
+    return allObjects.getAll();
+  }
+
+  public HashSet<ExtendableObject> getExtendableObjects()
+  {
+    return allObjects.getAllOfType(ExtendableObject.class);
+  }
+
+  public void removeObject(TileObject obj)
+  {
+    allObjects.remove(obj);
+
+  }
+
+  public HashSet<TileObject> getTileObjects()
+  {
+    return allObjects.getAllOfType(TileObject.class);
+  }
+
+
+  public boolean alreadyHas(Class<? extends OnePerLevelObject> classType)
+  {
+    return !allObjects.getAllOfType(classType).isEmpty();
+  }
+
+  public OnePerLevelObject getOnePerLevelObject(Class<? extends OnePerLevelObject> classType)
+  {
+    for (Iterator<? extends OnePerLevelObject> it = allObjects.getAllOfType(classType).iterator(); 
+        it.hasNext();)
+    {
+      return it.next();
+    }
+
+    throw new RuntimeException("No such object as " + classType.getSimpleName() + 
+        " exists in the level");
+
+  }
+
+  public boolean locationOccupied(Point location)
+  {
+    for (TileObject object: allObjects)
+    {
+      if (object.containsPoint(location.x, location.y))
+        return true;
+    }
+
+    return false;
   }
   
-  public void addMultiTileObject(MultiTileObject obj)
+  public TileObject getFirstObjectFoundAt(Point location)
   {
-    multiTileObjects.add(obj);
+    for (TileObject object: allObjects)
+    {
+      if (object.containsPoint(location.x, location.y))
+        return object;
+    }
+    
+    throw new RuntimeException("No object found at " + location);
+  }
+
+  public boolean willOverlapOtherObject(ModRectangle rectangle)
+  {    
+    for (TileObject obj: getTileObjects())
+    {      
+      if (obj.wouldIntersect(rectangle))
+        return true;
+    }
+
+    return false;
   }
   
-  public ArrayList<MultiTileObject> getMultiTileObjects()
+  public boolean willOverlapOtherObjectExcludeSelf(ModRectangle rectangle,
+      TileObject self)
   {
-    return multiTileObjects;
+    for (TileObject obj: getTileObjects())
+    {      
+      if (obj.wouldIntersect(rectangle) && obj != self)
+        return true;
+    }
+
+    return false;
+  }
+
+  public ArrayList<TileObject> allObjectsWithin(Selection selection)
+  {
+    ArrayList<TileObject> objects = new ArrayList<TileObject>();
+
+    for (TileObject obj: allObjects)
+    {
+      if (selection.intersects(obj.getArea()))
+      {
+        objects.add(obj);
+      }
+    }
+
+    return objects;
+  }
+  
+  public ArrayList<TileObject> allObjectsWithinExcluding(Selection selection,
+      ArrayList<TileObject> exclude)
+  {
+    ArrayList<TileObject> objects = new ArrayList<TileObject>();
+
+    for (TileObject obj: allObjects)
+    {
+      if (selection.intersects(obj.getArea()) &&
+          !exclude.contains(obj))
+      {
+        objects.add(obj);
+      }
+    }
+
+    return objects;
   }
 }

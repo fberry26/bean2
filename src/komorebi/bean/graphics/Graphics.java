@@ -9,6 +9,8 @@ public final class Graphics {
       320, 256, Draw.TITLE_SCREEN);
   public static final Image GREY_BACKGROUND = new Image(0, 0, 1, 1,
       Draw.MISCELLANY);
+  public static final Image WHITE_FILL = new Image(3, 0, 1, 1,
+      Draw.MISCELLANY);
 
   
   /* ENTITIES */
@@ -38,7 +40,8 @@ public final class Graphics {
   
   public static final Image[][] PISTON = new Image[2][7];
   
-  public static final Image[] PLATFORM = new Image[7];
+  public static final int PLATFORM_L = 0, PLATFORM_R = 1;
+  public static final Image[][] PLATFORM = new Image[2][7];
   
   public static final Image[] LADDER = new Image[7];
   
@@ -57,7 +60,11 @@ public final class Graphics {
   /* EDITOR */
   public static final Image GRID = new Image(0, 16, 16, 16, 
       Draw.MISCELLANY);
-  public static final Image EDITOR_BUTTONS = new Image(16, 0, 64, 16,
+  public static final Image GRID_OFF_ICON = new Image(16, 16, 16, 16,
+      Draw.MISCELLANY);
+  public static final Image GRID_ON_ICON = new Image(16, 32, 16, 16,
+      Draw.MISCELLANY);
+  public static final Image EDITOR_FILE_BUTTONS = new Image(16, 0, 64, 16,
       Draw.MISCELLANY);
   public static final Image BUTTON_HOVER_SQUARE = new Image(80, 0, 32, 32,
       Draw.MISCELLANY);
@@ -66,14 +73,15 @@ public final class Graphics {
   public static final Image BLUE_SELECTED_FUNCTION = new Image(2,0,1,1,
       Draw.MISCELLANY);
   
-  public static final Image PENCIL = new Image(128, 0, 16, 16, 
+  public static final Image EXPAND_ARROW = new Image(112, 21, 9, 7, 
       Draw.MISCELLANY);
-  public static final Image MOUSE_POINTER = new Image(144, 0, 16, 16,
+  
+  public static final Image DIRECTION_ARROW = new Image(127, 16, 9, 7,
       Draw.MISCELLANY);
-  public static final Image DELETE_X = new Image(160, 0, 16, 16,
-      Draw.MISCELLANY);
-  public static final Image EXPAND_ARROW = new Image(112, 16, 9, 7, 
-      Draw.MISCELLANY);
+  public static final Image POP_UP = new Image(176, 0, 18, 18, Draw.MISCELLANY);
+  public static final Image TURTLE = new Image(36, 16, 16, 16, Draw.MISCELLANY);
+  public static final Image RABBIT = new Image(53, 16, 16, 16, Draw.MISCELLANY);
+  
   
   public static void initialize()
   {
@@ -90,7 +98,6 @@ public final class Graphics {
     {
       BEAN[i] = new Image(12*i, 0, 12, 16, Draw.SPREADSHEET);
       SQUARES[i] = new Image(0, 16 + 16*i, 16, 16, Draw.SPREADSHEET);
-      PLATFORM[i] = new Image(190 + 50*i, 19, 20, 8, Draw.SPREADSHEET);
       LADDER[i] = new Image(176 + 16*i, 128, 16, 16, Draw.SPREADSHEET);
       
       for (int j = SPIKE_C; j <= SPIKE_L; j++)
@@ -111,9 +118,11 @@ public final class Graphics {
             16, Draw.SPREADSHEET);
       }
       
-      for (int j = PISTON_MID; j <= PISTON_END; j++)
+      for (int j = 0; j <= 1; j++)
       {
         PISTON[j][i] = new Image(192 + 50*i, 32 + 16*j, 16, 16,
+            Draw.SPREADSHEET);
+        PLATFORM[j][i] = new Image(190 + 50*i + 10*j, 19, 10, 8, 
             Draw.SPREADSHEET);
       }
       
