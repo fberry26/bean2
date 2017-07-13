@@ -53,9 +53,7 @@ public class ClickAndDragTool extends Tool {
   {
     ExtendableObject hoveringOver = 
         getExtendableObjectBeingHoveredOver();
-    
-    System.out.println("Grabber.anchor()");
-    
+        
     grabber.anchor(MouseHandler.getTx(), MouseHandler.getTy());
     grabber.startGrabbing(hoveringOver, 
         hoveringOver.getGrabberBeingHoveredOver()); 

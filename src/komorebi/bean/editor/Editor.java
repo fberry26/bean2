@@ -29,8 +29,8 @@ public class Editor implements State {
   
   private Palette palette;
   private static EditorLevel level;
-  private Toolbar toolbar;
-
+  private static Toolbar toolbar;
+  
   public static final Dimension TILE_MODSPACE = new Dimension(20, 16);
   public static final Dimension MODSPACE = new Dimension(320, 256);
   private static MultiSelection selection = new MultiSelection();
@@ -68,7 +68,10 @@ public class Editor implements State {
       clearSelection();
     }
     
-    toolbar.update();
+    if (toolbar.isEnabled())
+    {
+      toolbar.update();
+    }
     palette.update();
     
     AttributeWindow.update();
@@ -174,6 +177,11 @@ public class Editor implements State {
   public static EditorLevel level()
   {
     return level;
+  }
+  
+  public static void setToolsEnabled(boolean enabled)
+  {
+    toolbar.setEnabled(enabled);
   }
   
   

@@ -53,8 +53,10 @@ public enum Tile {
       Draw.ROTATE_COUNTERCLOCKWISE), 
   SPIKE_ALONE_LEFT(Graphics.SPIKES[Graphics.SPIKE_ALONE][RED], 
       Draw.ROTATE_COUNTERCLOCKWISE),
-  PLATFORM_LEFT(Graphics.PLATFORM[Graphics.PLATFORM_L][RED], new Point(6,0)), 
-  PLATFORM_RIGHT(Graphics.PLATFORM[Graphics.PLATFORM_R][RED]),
+  PLATFORM_LEFT_HORIZ(Graphics.PLATFORM[Graphics.PLATFORM_L][RED], new Point(6,0)), 
+  PLATFORM_RIGHT_HORIZ(Graphics.PLATFORM[Graphics.PLATFORM_R][RED]),
+  PLATFORM_LEFT_VERT(Graphics.PLATFORM[Graphics.PLATFORM_L][RED], new Point(6,0)), 
+  PLATFORM_RIGHT_VERT(Graphics.PLATFORM[Graphics.PLATFORM_R][RED]),
   BLANK(null);
   
   private Image image;
@@ -106,7 +108,7 @@ public enum Tile {
       SPIKE_L_DOWN, SPIKE_C_DOWN, SPIKE_R_DOWN, SPIKE_ALONE_DOWN, 
       SPIKE_L_RIGHT, SPIKE_C_RIGHT, SPIKE_R_RIGHT, SPIKE_ALONE_RIGHT, 
       SPIKE_L_LEFT, SPIKE_C_LEFT, SPIKE_R_LEFT, SPIKE_ALONE_LEFT, 
-      PLATFORM_LEFT};
+      PLATFORM_LEFT_HORIZ};
 
   public static void nextColor()
   {
@@ -161,10 +163,10 @@ public enum Tile {
         case SPIKE_ALONE_RIGHT:          
           object.setImage(Graphics.SPIKES[Graphics.SPIKE_ALONE][color]);
           break;
-        case PLATFORM_LEFT:
+        case PLATFORM_LEFT_HORIZ:
           object.setImage(Graphics.PLATFORM[Graphics.PLATFORM_L][color]);
           break;
-        case PLATFORM_RIGHT:
+        case PLATFORM_RIGHT_HORIZ:
           object.setImage(Graphics.PLATFORM[Graphics.PLATFORM_R][color]);
           break;
         default: break;

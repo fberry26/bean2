@@ -1,19 +1,18 @@
 package komorebi.bean.editor.objects;
 
-import java.awt.Rectangle;
-
 import komorebi.bean.editor.PaletteItem;
 import komorebi.bean.editor.attributes.Attributable;
 import komorebi.bean.editor.attributes.AttributeFactory;
 import komorebi.bean.editor.attributes.AttributeWindow;
 import komorebi.bean.editor.attributes.AttributesPackage;
+import komorebi.bean.editor.attributes.Linkable;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
 public class Piston extends VerticalExtendableObject implements
-  Attributable {
+  Attributable, Linkable {
   
   
   private AttributesPackage attributes;
@@ -60,16 +59,15 @@ public class Piston extends VerticalExtendableObject implements
       Draw.draw(Graphics.PISTON[Graphics.PISTON_MID][Tile.getColor()], 
           modX(area.x)*16, modY(area.y+i)*16);
     }
-    
-    for (Rectangle comp: area.getComponentRectangles())
-    {
-      Draw.fill(Graphics.BLUE_SELECTED_FUNCTION, comp.x*16,
-          comp.y*16, comp.width*16, comp.height*16);
-    }    
   }
   
   public AttributesPackage getAttributes() {
     return attributes;
+  }
+
+  @Override
+  public String getName() {
+    return "Piston";
   }
   
 }

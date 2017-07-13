@@ -8,12 +8,13 @@ import komorebi.bean.editor.attributes.AttributeFactory;
 import komorebi.bean.editor.attributes.AttributeWindow;
 import komorebi.bean.editor.attributes.AttributesPackage;
 import komorebi.bean.editor.attributes.ChoiceAttribute;
+import komorebi.bean.editor.attributes.Linkable;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
 public class Treadmill extends HorizontalExtendableObject 
-  implements Attributable {
+  implements Attributable, Linkable {
   
   private AttributesPackage attributes;
 
@@ -76,6 +77,11 @@ public class Treadmill extends HorizontalExtendableObject
   @Override
   public AttributesPackage getAttributes() {
     return attributes;
+  }
+
+  @Override
+  public String getName() {
+    return "Treadmill";
   }
 
 }

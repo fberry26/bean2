@@ -1,7 +1,5 @@
 package komorebi.bean.editor.objects;
 
-import java.awt.Rectangle;
-
 import komorebi.bean.editor.PaletteItem;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
@@ -62,13 +60,6 @@ public class HorizontalSpikeStrip extends HorizontalExtendableObject {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
             modX(area.x+i)*16, modY(area.y)*16, 
             upsideDown?Draw.ROTATE_180:Draw.ROTATE_NONE, false);
-      }
-      
-      //TODO Debug and remove
-      for (Rectangle comp: area.getComponentRectangles())
-      {
-        Draw.fill(Graphics.BLUE_SELECTED_FUNCTION, comp.x*16,
-            comp.y*16, comp.width*16, comp.height*16);
       }
       
       

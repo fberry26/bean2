@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import komorebi.bean.editor.attributes.Linkable;
 import komorebi.bean.editor.objects.ExtendableObject;
 import komorebi.bean.editor.objects.MultiTileObject;
 import komorebi.bean.editor.objects.OnePerLevelObject;
@@ -15,11 +16,11 @@ import komorebi.bean.editor.tools.clickanddrag.Selection;
 
 public class EditorLevel {
 
-  CategorizedSet<TileObject> allObjects;
+  CategorizedSet2<TileObject> allObjects;
 
   public EditorLevel()
   {
-    allObjects = new CategorizedSet<TileObject>(TileObject.class);
+    allObjects = new CategorizedSet2<TileObject>(TileObject.class);
   }
 
   public void render()
@@ -53,6 +54,11 @@ public class EditorLevel {
   public HashSet<ExtendableObject> getExtendableObjects()
   {
     return allObjects.getAllOfType(ExtendableObject.class);
+  }
+  
+  public HashSet<Linkable> getLinkableObjects()
+  {
+    return allObjects.getAllOfType(Linkable.class);
   }
 
   public void removeObject(TileObject obj)

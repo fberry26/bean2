@@ -10,18 +10,18 @@ import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 import komorebi.bean.graphics.Image;
 
-public class Platform extends HorizontalExtendableObject {
+public class HorizontalPlatform extends HorizontalExtendableObject {
 
   private static final Image PATH_RED_FILL = new Image(100, 32, 1, 1,
       Draw.MISCELLANY);
   private int offset;
 
-  public Platform(PaletteItem origin)
+  public HorizontalPlatform(PaletteItem origin)
   {
     super(origin, null);
   }
 
-  private Platform(PaletteItem origin, ModRectangle area)
+  private HorizontalPlatform(PaletteItem origin, ModRectangle area)
   {
     super(origin, area);
     horizontal = true;
@@ -31,15 +31,26 @@ public class Platform extends HorizontalExtendableObject {
 
   @Override
   public TileObject build(PaletteItem origin, ModRectangle area) {
-    return new Platform(origin, area);
+    return new HorizontalPlatform(origin, area);
   }
   
   @Override
   public void extendLeft(int add)
   {
-    super.extendLeft(add);
-    
-    offset += add;
+    if (-add <= offset)
+    {
+      super.extendLeft(add);
+      
+      offset += add;
+    }
+  }
+  
+  public void extendRight(int add)
+  {
+    if (length + add > offset + 1)
+    {
+      super.extendRight(add);
+    }
   }
 
   @Override
@@ -55,6 +66,24 @@ public class Platform extends HorizontalExtendableObject {
       Draw.fill(PATH_RED_FILL, component.x*16, component.y*16, 
           component.width*16, component.height*16);
     }
+  }
+  
+  @Override
+  public boolean canBeMovedBy(int dx, int dy)
+  {
+    int originalX = MouseHandler.getTx() - dx;
+
+    if (dx != 0 && overPlatform(originalX) && length > minLength())
+    {
+      int newOffset = offset + dx;
+
+      if (newOffset >= 0 && newOffset < length - 1)
+      {
+        return dy == 0;
+      } 
+    }
+    
+    return super.canBeMovedBy(dx, dy);
   }
 
   @Override
@@ -88,7 +117,8 @@ public class Platform extends HorizontalExtendableObject {
 
   private boolean overPlatform(int x)
   {
-    return x == modX(area.x + offset) || x == modX(area.x + offset + 1);
+    return x == modX(area.x + offset) || 
+        x == modX(area.x + offset + 1);
   }
 
 }

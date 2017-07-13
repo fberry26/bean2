@@ -22,6 +22,8 @@ public class Toolbar {
   
   private Palette palette;
   
+  private boolean enabled = true;
+  
   private static final Rectangle TOOLBAR_AREA = 
       new Rectangle(Editor.MAP_WIDTH-6, Editor.MAP_HT, 6, 1);
   
@@ -118,5 +120,15 @@ public class Toolbar {
     {
       PaletteItem.setAreOnePerLevelObjectsEnabled(true);
     }
+  }
+  
+  public void setEnabled(boolean b)
+  {
+    enabled = b;
+  }
+  
+  public boolean isEnabled()
+  {
+    return enabled;
   }
 }

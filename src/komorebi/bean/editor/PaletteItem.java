@@ -2,16 +2,19 @@ package komorebi.bean.editor;
 
 import java.awt.Point;
 
+import komorebi.bean.editor.objects.Button;
+import komorebi.bean.editor.objects.Gate;
+import komorebi.bean.editor.objects.HorizontalPlatform;
 import komorebi.bean.editor.objects.HorizontalSpikeStrip;
 import komorebi.bean.editor.objects.Ladder;
 import komorebi.bean.editor.objects.OnePerLevelObject;
 import komorebi.bean.editor.objects.OnePerLevelObject.Bean;
 import komorebi.bean.editor.objects.OnePerLevelObject.Flag;
 import komorebi.bean.editor.objects.Piston;
-import komorebi.bean.editor.objects.Platform;
 import komorebi.bean.editor.objects.SingleTileObject;
 import komorebi.bean.editor.objects.TileObject;
 import komorebi.bean.editor.objects.Treadmill;
+import komorebi.bean.editor.objects.VerticalPlatform;
 import komorebi.bean.editor.objects.VerticalSpikeStrip;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
@@ -21,7 +24,8 @@ public enum PaletteItem {
   BLOCK(SingleTileObject.factory(), Tile.BLOCK), 
   BEAN(SingleTileObject.factory(), Tile.BEAN), 
   FLAG(SingleTileObject.factory(), Tile.FLAG),
-  BUTTON(SingleTileObject.factory(), Tile.BUTTON), 
+  BUTTON(new Button(null, null), Tile.BUTTON),
+  
   SPIKE_UP(Orientation.HORIZONTAL, 
       new HorizontalSpikeStrip(null, false), Tile.SPIKE_ALONE_UP),
   SPIKE_RIGHT(Orientation.VERTICAL, new VerticalSpikeStrip(null, false),
@@ -30,17 +34,23 @@ public enum PaletteItem {
       Tile.SPIKE_ALONE_DOWN),
   SPIKE_LEFT(Orientation.VERTICAL, new VerticalSpikeStrip(null, true),
       Tile.SPIKE_ALONE_LEFT), 
-  TURRET_LEFT(SingleTileObject.factory(), Tile.TURRET_LEFT), 
-  TURRET_RIGHT(SingleTileObject.factory(), Tile.TURRET_RIGHT),
-  LADDER(Orientation.VERTICAL, new Ladder(null), Tile.LADDER), 
-  GATE_HORIZ(SingleTileObject.factory(), Tile.GATE_HORIZ),
-  PISTON(Orientation.VERTICAL, new Piston(null), Tile.PISTON_MID, Tile.PISTON_END),
+  
+  PLATFORM_HORIZ(Orientation.HORIZONTAL, new HorizontalPlatform(null), Tile.PLATFORM_LEFT_HORIZ, 
+      Tile.PLATFORM_RIGHT_HORIZ),
+  PLATFORM_VERT(Orientation.HORIZONTAL, new VerticalPlatform(null), Tile.PLATFORM_LEFT_VERT, 
+      Tile.PLATFORM_RIGHT_VERT),
+  
+  PISTON(Orientation.VERTICAL, new Piston(null), 
+      Tile.PISTON_MID, Tile.PISTON_END),
+  GATE_VERT(new Gate(), Tile.GATE_VERT),
   TREADMILL(Orientation.HORIZONTAL, new Treadmill(null), 
       Tile.TREADMILL_L, Tile.TREADMILL_R),
-  GATE_VERT(SingleTileObject.factory(), Tile.GATE_VERT), 
-  PLATFORM(Orientation.HORIZONTAL, new Platform(null), Tile.PLATFORM_LEFT, 
-      Tile.PLATFORM_RIGHT);
+
+  GATE_HORIZ(new Gate(), Tile.GATE_HORIZ),
+  TURRET_LEFT(SingleTileObject.factory(), Tile.TURRET_LEFT), 
+  TURRET_RIGHT(SingleTileObject.factory(), Tile.TURRET_RIGHT),
   
+  LADDER(Orientation.VERTICAL, new Ladder(null), Tile.LADDER);
   Tile[] tiles;
   boolean groupHorizontally;
   
@@ -112,7 +122,7 @@ public enum PaletteItem {
   
   private static Tile[][] initializePalette()
   {
-    Tile[][] palette = new Tile[5][4];
+    Tile[][] palette = new Tile[6][4];
     
     int row = 0, col = 0;
     

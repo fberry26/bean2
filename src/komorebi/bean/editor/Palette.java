@@ -76,11 +76,11 @@ public class Palette {
   
   private boolean mouseInPalette()
   {
-    return MouseHandler.getTx() >= PAL_LEFT && 
+    return (MouseHandler.getTx() >= PAL_LEFT && 
         MouseHandler.getTy() >= PAL_BOTTOM && 
-        MouseHandler.getTy() <= PAL_TOP && 
-        !(MouseHandler.getTx()==PAL_LEFT+2 &&
-          MouseHandler.getTy()==PAL_BOTTOM);
+        MouseHandler.getTy() <= PAL_TOP) ||
+        (MouseHandler.getTx() == PAL_LEFT &&
+        MouseHandler.getTy() == PAL_BOTTOM - 1);
   }
   
   private Tile currentTile()

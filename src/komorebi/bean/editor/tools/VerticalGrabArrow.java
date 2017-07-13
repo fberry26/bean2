@@ -25,7 +25,8 @@ public class VerticalGrabArrow extends GrabArrow {
   
   public static VerticalGrabArrow createUpArrow(Rectangle objLoc)
   {
-    ModRectangle arrowLoc = new ModRectangle(objLoc.x*16 + 5, 
+    ModRectangle arrowLoc = new ModRectangle(objLoc.x*16 +
+        center(objLoc.width*16, 9), 
         (int) (objLoc.getMaxY()*16-8), 9, 7,
         Editor.MODSPACE);
     
@@ -34,9 +35,15 @@ public class VerticalGrabArrow extends GrabArrow {
 
   public static VerticalGrabArrow createDownArrow(Rectangle objLoc)
   {
-    ModRectangle arrowLoc = new ModRectangle(objLoc.x*16 + 5, 
+    ModRectangle arrowLoc = new ModRectangle(objLoc.x*16 +
+        center(objLoc.width*16, 9), 
         (int) (objLoc.y*16), 9, 7, Editor.MODSPACE);
     
     return new VerticalGrabArrow(GrabberDirection.DOWN, arrowLoc);
+  }
+  
+  private static int center(int largerWidth, int smallerWidth)
+  {
+    return (largerWidth - smallerWidth) / 2 + 1;
   }
 }
