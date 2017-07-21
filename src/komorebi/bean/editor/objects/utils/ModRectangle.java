@@ -6,10 +6,10 @@ import java.awt.Rectangle;
 
 import komorebi.bean.editor.Editor;
 
-public class ModRectangle extends Rectangle {
+public class ModRectangle extends Rectangle implements Shape {
 
   private static final long serialVersionUID = 1L;
-  private Dimension modSpace;
+  public Dimension modSpace;
   
   private Rectangle[] components;
    
@@ -110,9 +110,9 @@ public class ModRectangle extends Rectangle {
     return components;
   }
   
-  public boolean intersects(ModRectangle rect)
+  public boolean intersects(Shape shape)
   {
-    for (Rectangle r1: rect.getComponentRectangles())
+    for (Rectangle r1: shape.getComponentRectangles())
     {
       for (Rectangle r2: components)
       {
@@ -135,6 +135,12 @@ public class ModRectangle extends Rectangle {
     return false;
   }
   
+  public Point getTopRightPoint()
+  {
+    return new Point((x+width)%modSpace.width,
+        (y+height)%modSpace.height);
+  }
+  
   public boolean intersects(Rectangle rect)
   {
     for (Rectangle r: components)
@@ -144,6 +150,18 @@ public class ModRectangle extends Rectangle {
     }
     
     return false;
+  }
+  
+  public String toString()
+  {
+    String ret = "";
+    
+    for (Rectangle r: getComponentRectangles())
+    {
+      ret += r.toString() + "\n";
+    }
+    
+    return ret;
   }
   
   private static Rectangle rectWithCorners(Point bottomLeft, Point topRight)
@@ -163,5 +181,23 @@ public class ModRectangle extends Rectangle {
     
     return num;
   }
+
+  @Override
+  public Shape duplicate() {
+    return new ModRectangle(this.x, this.y, this.width, this.height,
+        this.modSpace);
+  }
+  
+  public int x()
+  {
+    return x;
+  }
+  
+  public int y()
+  {
+    return y;
+  }
+  
+
   
 }

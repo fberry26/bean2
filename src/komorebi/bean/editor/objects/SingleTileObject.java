@@ -31,7 +31,7 @@ public class SingleTileObject extends TileObject {
 
   public void render()
   {
-    tile.drawTile(area.x*16, area.y*16);
+    tile.drawTile(area.x()*16, area.y()*16);
   }
   
   public Tile getTile()

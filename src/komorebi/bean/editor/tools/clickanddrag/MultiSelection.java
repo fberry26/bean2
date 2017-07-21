@@ -1,8 +1,9 @@
 package komorebi.bean.editor.tools.clickanddrag;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import komorebi.bean.editor.objects.utils.Shape;
 
 public class MultiSelection implements Draggable, Selection {
 
@@ -36,7 +37,7 @@ public class MultiSelection implements Draggable, Selection {
     return rectangles.isEmpty();
   }
   
-  public boolean contains(Rectangle item)
+  public boolean contains(Shape item)
   {
     for (RectangularSelection rect: rectangles)
     {
@@ -47,7 +48,7 @@ public class MultiSelection implements Draggable, Selection {
     return false;
   }
   
-  public boolean intersects(Rectangle item)
+  public boolean intersects(Shape item)
   {
     for (RectangularSelection rect: rectangles)
     {

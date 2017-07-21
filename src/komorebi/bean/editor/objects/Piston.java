@@ -5,8 +5,9 @@ import komorebi.bean.editor.attributes.Attributable;
 import komorebi.bean.editor.attributes.AttributeFactory;
 import komorebi.bean.editor.attributes.AttributeWindow;
 import komorebi.bean.editor.attributes.AttributesPackage;
-import komorebi.bean.editor.attributes.Linkable;
+import komorebi.bean.editor.attributes.buttonlink.Linkable;
 import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.editor.save.IDCreator;
 import komorebi.bean.game.Tile;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
@@ -14,7 +15,7 @@ import komorebi.bean.graphics.Graphics;
 public class Piston extends VerticalExtendableObject implements
   Attributable, Linkable {
   
-  
+  private String id;
   private AttributesPackage attributes;
   
   public Piston(PaletteItem origin)
@@ -29,6 +30,8 @@ public class Piston extends VerticalExtendableObject implements
     length = 2;
     
     createAttributes();
+    
+    id = IDCreator.next();
   }
   
   private void createAttributes()
@@ -52,12 +55,12 @@ public class Piston extends VerticalExtendableObject implements
   public void render() {
         
     Draw.draw(Graphics.PISTON[Graphics.PISTON_END][Tile.getColor()], 
-        modX(area.x)*16, modY(area.y)*16);
+        modX(area.x())*16, modY(area.y())*16);
     
     for (int i = 1; i < length; i++)
     {
       Draw.draw(Graphics.PISTON[Graphics.PISTON_MID][Tile.getColor()], 
-          modX(area.x)*16, modY(area.y+i)*16);
+          modX(area.x())*16, modY(area.y()+i)*16);
     }
   }
   
@@ -69,5 +72,15 @@ public class Piston extends VerticalExtendableObject implements
   public String getName() {
     return "Piston";
   }
+
+  public String getID() {
+    return id;
+  }
+  
+  public ModRectangle getArea()
+  {
+    return (ModRectangle) area;
+  }
+  
   
 }

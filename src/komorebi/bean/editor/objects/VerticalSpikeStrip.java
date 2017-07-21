@@ -39,7 +39,7 @@ public class VerticalSpikeStrip extends VerticalExtendableObject {
     if (length == 1)
     {
       Draw.draw(Graphics.SPIKES[Graphics.SPIKE_ALONE][Tile.getColor()],
-          area.x*16, area.y*16, 
+          area.x()*16, area.y()*16, 
           pointsLeft?Draw.ROTATE_COUNTERCLOCKWISE:Draw.ROTATE_CLOCKWISE, 
               false);
     } else
@@ -47,21 +47,21 @@ public class VerticalSpikeStrip extends VerticalExtendableObject {
       if (pointsLeft)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            area.x*16, area.y*16, Draw.ROTATE_COUNTERCLOCKWISE, false);
+            area.x()*16, area.y()*16, Draw.ROTATE_COUNTERCLOCKWISE, false);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()], 
-            (area.x)*16, (area.y-length+1)*16, Draw.ROTATE_COUNTERCLOCKWISE, false);
+            (area.x())*16, (area.y()-length+1)*16, Draw.ROTATE_COUNTERCLOCKWISE, false);
       } else
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()],
-            area.x*16, area.y*16, Draw.ROTATE_CLOCKWISE, false);
+            area.x()*16, area.y()*16, Draw.ROTATE_CLOCKWISE, false);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            (area.x)*16, (area.y-length+1)*16, Draw.ROTATE_CLOCKWISE, false);
+            (area.x())*16, (area.y()-length+1)*16, Draw.ROTATE_CLOCKWISE, false);
       }
       
       for (int i = 1; i < length - 1; i++)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
-            (area.x)*16, (area.y-i)*16, pointsLeft?Draw.ROTATE_COUNTERCLOCKWISE:
+            (area.x())*16, (area.y()-i)*16, pointsLeft?Draw.ROTATE_COUNTERCLOCKWISE:
               Draw.ROTATE_CLOCKWISE, false);
       }
     }

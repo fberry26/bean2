@@ -37,28 +37,28 @@ public class HorizontalSpikeStrip extends HorizontalExtendableObject {
     if (length == 1)
     {
       Draw.draw(Graphics.SPIKES[Graphics.SPIKE_ALONE][Tile.getColor()],
-          area.x*16, area.y*16, upsideDown?Draw.ROTATE_180:Draw.ROTATE_NONE, 
+          area.x()*16, area.y()*16, upsideDown?Draw.ROTATE_180:Draw.ROTATE_NONE, 
               false);
     } else
     {
       if (upsideDown)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            modX(area.x)*16, modY(area.y)*16, Draw.ROTATE_180, false);
+            modX(area.x())*16, modY(area.y())*16, Draw.ROTATE_180, false);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()], 
-            modX(area.x+length-1)*16, modY(area.y)*16, Draw.ROTATE_180, false);
+            modX(area.x()+length-1)*16, modY(area.y())*16, Draw.ROTATE_180, false);
       } else
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()],
-            modX(area.x)*16, modY(area.y)*16);
+            modX(area.x())*16, modY(area.y())*16);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            modX(area.x+length-1)*16, modY(area.y)*16);
+            modX(area.x()+length-1)*16, modY(area.y())*16);
       }
       
       for (int i = 1; i < length - 1; i++)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
-            modX(area.x+i)*16, modY(area.y)*16, 
+            modX(area.x()+i)*16, modY(area.y())*16, 
             upsideDown?Draw.ROTATE_180:Draw.ROTATE_NONE, false);
       }
       

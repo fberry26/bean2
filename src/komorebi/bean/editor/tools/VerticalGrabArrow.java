@@ -5,19 +5,18 @@ import java.awt.Rectangle;
 import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.editor.tools.clickanddrag.GrabArrow;
-import komorebi.bean.editor.tools.clickanddrag.Grabber.GrabberDirection;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
 public class VerticalGrabArrow extends GrabArrow {
 
-  private VerticalGrabArrow(GrabberDirection direction, ModRectangle area) {
-    super(direction, area);
+  private VerticalGrabArrow(ModRectangle area, boolean forward) {
+    super(area, forward);
   }
 
   @Override
   public void render() {
-    int rotation = (direction == GrabberDirection.UP)?Draw.ROTATE_COUNTERCLOCKWISE:
+    int rotation = (isForward())?Draw.ROTATE_COUNTERCLOCKWISE:
       Draw.ROTATE_CLOCKWISE;
     
     Draw.draw(Graphics.EXPAND_ARROW, area.x, area.y, rotation, false);
@@ -30,7 +29,7 @@ public class VerticalGrabArrow extends GrabArrow {
         (int) (objLoc.getMaxY()*16-8), 9, 7,
         Editor.MODSPACE);
     
-    return new VerticalGrabArrow(GrabberDirection.UP, arrowLoc);
+    return new VerticalGrabArrow(arrowLoc, true);
   }
 
   public static VerticalGrabArrow createDownArrow(Rectangle objLoc)
@@ -39,7 +38,7 @@ public class VerticalGrabArrow extends GrabArrow {
         center(objLoc.width*16, 9), 
         (int) (objLoc.y*16), 9, 7, Editor.MODSPACE);
     
-    return new VerticalGrabArrow(GrabberDirection.DOWN, arrowLoc);
+    return new VerticalGrabArrow(arrowLoc, false);
   }
   
   private static int center(int largerWidth, int smallerWidth)

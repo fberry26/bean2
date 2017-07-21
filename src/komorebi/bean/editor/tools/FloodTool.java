@@ -53,10 +53,10 @@ public class FloodTool extends ObjectPlacementTool {
       int width = item.getWidth();
       int height = item.getHeight();
       
-      ModRectangle above = AreaUtilities.translate(location, 0, height);
-      ModRectangle below = AreaUtilities.translate(location, 0, -height);
-      ModRectangle toLeft = AreaUtilities.translate(location, -width, 0);
-      ModRectangle toRight = AreaUtilities.translate(location, width, 0);
+      ModRectangle above = (ModRectangle) AreaUtilities.translate(location, 0, height);
+      ModRectangle below = (ModRectangle) AreaUtilities.translate(location, 0, -height);
+      ModRectangle toLeft = (ModRectangle) AreaUtilities.translate(location, -width, 0);
+      ModRectangle toRight = (ModRectangle) AreaUtilities.translate(location, width, 0);
       
       floodFill(item, above);
       floodFill(item, below);

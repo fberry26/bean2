@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.objects.TileObject;
 import komorebi.bean.editor.objects.utils.AreaUtilities;
+import komorebi.bean.editor.objects.utils.Shape;
 import komorebi.bean.graphics.SelectionAnimation;
 
 public class RectangularSelection implements Draggable, Selection {
@@ -39,9 +40,16 @@ public class RectangularSelection implements Draggable, Selection {
     selection.render();
   }
 
-  public boolean contains(Rectangle rect)
+  public boolean contains(Shape shape)
   {    
-    return area.contains(rect);
+    for (Rectangle rect: shape.getComponentRectangles())
+    {
+      if (area.contains(rect))
+      {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean contains(Point point)
@@ -49,9 +57,16 @@ public class RectangularSelection implements Draggable, Selection {
     return area.contains(point);
   }
 
-  public boolean intersects(Rectangle rect)
+  public boolean intersects(Shape shape)
   {
-    return area.intersects(rect);
+    for (Rectangle rect: shape.getComponentRectangles())
+    {
+      if (area.intersects(rect))
+      {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void moveBy(int dx, int dy)
@@ -75,7 +90,7 @@ public class RectangularSelection implements Draggable, Selection {
 
   @Override
   public boolean canBeMovedBy(int dx, int dy) {
-    Rectangle newLoc = AreaUtilities.translate(area, dx, dy);
+    Rectangle newLoc = AreaUtilities.translateRectangle(area, dx, dy);
     
     return Editor.MAP.contains(newLoc);
 

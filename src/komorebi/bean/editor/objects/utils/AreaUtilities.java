@@ -3,9 +3,17 @@ package komorebi.bean.editor.objects.utils;
 import java.awt.Rectangle;
 
 public class AreaUtilities {
-  public static ModRectangle translate(Rectangle rect, int dx, int dy)
+  public static Shape translate(Shape shape, int dx, int dy)
   {
-    return new ModRectangle(rect.x + dx, rect.y + dy, rect.width, rect.height);
+    Shape duplicate = shape.duplicate();
+    duplicate.changeLocation(dx, dy);
+    
+    return duplicate;
+  }
+  
+  public static Rectangle translateRectangle(Rectangle rect, int dx, int dy)
+  {
+    return new Rectangle(rect.x + dx, rect.y + dy, rect.width, rect.height);
   }
   
   public static ModRectangle grow(Rectangle rect,

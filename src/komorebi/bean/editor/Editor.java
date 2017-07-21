@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import komorebi.bean.editor.attributes.AttributeWindow;
+import komorebi.bean.editor.attributes.buttonlink.Linkable;
 import komorebi.bean.editor.objects.TileObject;
 import komorebi.bean.editor.tools.clickanddrag.MultiSelection;
 import komorebi.bean.engine.GameHandler;
@@ -79,6 +80,14 @@ public class Editor implements State {
     if (KeyHandler.keyClick(Key.C))
     {
       Tile.nextColor();
+    }
+    
+    if (KeyHandler.keyClick(Key.D))
+    {
+      for (Linkable link: level.getLinkableObjects())
+      {
+        System.out.println(link.getID());
+      }
     }
     
   }

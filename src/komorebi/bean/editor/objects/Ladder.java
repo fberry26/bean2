@@ -35,8 +35,8 @@ public class Ladder extends VerticalExtendableObject {
 
     for (int i = 0; i < length; i++)
     {
-      Draw.draw(Graphics.LADDER[Tile.getColor()], modX(area.x)*16, 
-          modY(area.y + i)*16);
+      Draw.draw(Graphics.LADDER[Tile.getColor()], modX(area.x())*16, 
+          modY(area.y() + i)*16);
     }
 
   }

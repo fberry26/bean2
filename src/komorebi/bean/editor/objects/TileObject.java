@@ -6,15 +6,16 @@ import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.PaletteItem;
 import komorebi.bean.editor.objects.utils.AreaUtilities;
 import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.editor.objects.utils.Shape;
 import komorebi.bean.editor.tools.clickanddrag.Draggable;
 import komorebi.bean.engine.MouseHandler;
 
 public abstract class TileObject implements Draggable {
 
   private PaletteItem origin;
-  protected ModRectangle area;
+  protected Shape area;
   
-  public TileObject(PaletteItem origin, ModRectangle area)
+  public TileObject(PaletteItem origin, Shape area)
   {
     this.origin = origin;
     this.area = area;
@@ -22,11 +23,12 @@ public abstract class TileObject implements Draggable {
   
   public abstract void render();
 
-  public abstract TileObject build(PaletteItem origin, ModRectangle area);
+  public abstract TileObject build(PaletteItem origin, 
+      ModRectangle area);
   
-  public boolean wouldIntersect(ModRectangle rect) {
+  public boolean wouldIntersect(Shape shape) {
 
-    return area.intersects(rect);
+    return area.intersects(shape);
   }
   
   public boolean containsPoint(Point point)
@@ -46,13 +48,13 @@ public abstract class TileObject implements Draggable {
   
   public boolean canBeMovedBy(int dx, int dy)
   {
-    ModRectangle newLocation = AreaUtilities.translate(area, 
+    Shape newLocation = AreaUtilities.translate(area, 
         dx, dy);
     
     return willPlacementOfItemBeValid(newLocation);
   }
   
-  private boolean willPlacementOfItemBeValid(ModRectangle locationOfItem)
+  private boolean willPlacementOfItemBeValid(Shape locationOfItem)
   { 
     return //Editor.MAP.contains(locationOfItem) && 
         !Editor.level().willOverlapOtherObjectExcludeSelf(
@@ -66,12 +68,12 @@ public abstract class TileObject implements Draggable {
   
   public int getTx()
   {
-    return area.x;
+    return area.x();
   }
   
   public int getTy()
   {
-    return area.y;
+    return area.y();
   }
   
   protected static int modX(int num)
@@ -105,7 +107,7 @@ public abstract class TileObject implements Draggable {
     return origin;
   }
   
-  public ModRectangle getArea()
+  public Shape getArea()
   {
     return area;
   }

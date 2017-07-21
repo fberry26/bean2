@@ -2,6 +2,8 @@ package komorebi.bean.editor.attributes;
 
 import java.awt.Point;
 
+import komorebi.bean.editor.attributes.choice.ChoiceAttribute;
+
 public class AttributeFactory {
 
   

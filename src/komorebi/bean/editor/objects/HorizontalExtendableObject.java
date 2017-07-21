@@ -2,65 +2,17 @@ package komorebi.bean.editor.objects;
 
 import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.PaletteItem;
+import komorebi.bean.editor.objects.utils.AreaUtilities;
 import komorebi.bean.editor.objects.utils.ModRectangle;
-import komorebi.bean.editor.tools.clickanddrag.GrabArrow;
 import komorebi.bean.editor.tools.clickanddrag.HorizontalGrabArrow;
 
-public abstract class HorizontalExtendableObject extends ExtendableObject {  
-  
-  private HorizontalGrabArrow leftArrow, rightArrow;
-  
+public abstract class HorizontalExtendableObject extends SingleAxisExtendableObject {  
+    
   public HorizontalExtendableObject(PaletteItem origin, ModRectangle area)
   {
-    super(origin, area);
+    super(origin, area, area==null?null:HorizontalGrabArrow.createRightArrow(area),
+        area==null?null:HorizontalGrabArrow.createLeftArrow(area));
     horizontal = true;
-    
-    if (area != null)
-    {
-      leftArrow = HorizontalGrabArrow.createLeftArrow(area);
-      rightArrow = HorizontalGrabArrow.createRightArrow(area);
-    }
-  }
-  
-  @Override
-  public void moveBy(int dx, int dy)
-  {
-    super.moveBy(dx, dy);
-    leftArrow.move(dx, dy);
-    rightArrow.move(dx, dy);
-  }
-  
-  public void showArrows()
-  {
-    leftArrow.render();
-    rightArrow.render();
-  }
-  
-  public boolean userHoveringOverLeftGrabber()
-  {
-    return leftArrow.isUserHoveringOver();
-  }
-  
-  public boolean userHoveringOverRightGrabber()
-  {
-    return rightArrow.isUserHoveringOver();
-  }
-  
-  public boolean userHoveringOverAGrabber()
-  {
-    return userHoveringOverLeftGrabber() || userHoveringOverRightGrabber();
-  }
-  
-  public GrabArrow getGrabberBeingHoveredOver()
-  {
-    if (userHoveringOverLeftGrabber())
-      return leftArrow;
-    
-    if (userHoveringOverRightGrabber())
-      return rightArrow;
-    
-    throw new RuntimeException("Pre-condition unmet: no grabber being"
-        + " hovered over");
   }
   
   @Override
@@ -68,26 +20,49 @@ public abstract class HorizontalExtendableObject extends ExtendableObject {
   {
     super.addToLength(add);
     
-    area.changeSize(add, 0);
+    ((ModRectangle) area).changeSize(add, 0);
   }
   
-  public void extendLeft(int extendBy)
+  public void extendBackward(int dx, int dy)
   {
-    addToLength(extendBy);
-    moveBy(-extendBy, 0);
-    rightArrow.move(extendBy, 0);
+    addToLength(dx);
+    moveBy(-dx, 0);
+    forwardArrow.move(dx, 0);
   }
   
-  public void extendRight(int extendBy)
+  public void extendForward(int dx, int dy)
   {
-    addToLength(extendBy);
+    addToLength(dx);
     
-    rightArrow.move(extendBy, 0);
+    forwardArrow.move(dx, 0);
   }
   
   public int maxLength()
   {
     return Editor.TILE_MODSPACE.width;
+  }
+  
+  public boolean canExtendForward(int dx, int dy)
+  {    
+    ModRectangle newLocation = AreaUtilities.grow(((ModRectangle) area), 
+        0, dx, 0, 0);
+
+    return (dx != 0 && 
+        canBeExtendedBy(dx) &&
+        !Editor.level().willOverlapOtherObjectExcludeSelf(newLocation, 
+            this));
+  }
+  
+  public boolean canExtendBackward(int dx, int dy)
+  {    
+    
+    ModRectangle newLocation = AreaUtilities.grow(((ModRectangle) area), 
+        dx, 0, 0, 0);
+
+    return (dx != 0 && 
+        canBeExtendedBy(dx) 
+        && !Editor.level().willOverlapOtherObjectExcludeSelf(
+            newLocation, this));
   }
   
 }

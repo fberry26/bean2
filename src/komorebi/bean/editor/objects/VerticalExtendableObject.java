@@ -2,89 +2,63 @@ package komorebi.bean.editor.objects;
 
 import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.PaletteItem;
+import komorebi.bean.editor.objects.utils.AreaUtilities;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.editor.tools.VerticalGrabArrow;
-import komorebi.bean.editor.tools.clickanddrag.GrabArrow;
 
-public abstract class VerticalExtendableObject extends ExtendableObject {
-
-  private VerticalGrabArrow upArrow, downArrow;
+public abstract class VerticalExtendableObject extends SingleAxisExtendableObject {
 
   public VerticalExtendableObject(PaletteItem origin, ModRectangle area)
   {
-    super(origin, area);
+    super(origin, area, area==null?null:VerticalGrabArrow.createUpArrow(area),
+        area==null?null:VerticalGrabArrow.createDownArrow(area));
     horizontal = false;
-
-    if (area != null)
-    {
-      upArrow = VerticalGrabArrow.createUpArrow(area);
-      downArrow = VerticalGrabArrow.createDownArrow(area);
-    }
   }
-
-  public void showArrows()
-  {
-    upArrow.render();
-    downArrow.render();
-  }
-
-  public boolean userHoveringOverUpperGrabber()
-  {
-    return upArrow.isUserHoveringOver();
-  }
-
-  public boolean userHoveringOverLowerGrabber()
-  {
-    return downArrow.isUserHoveringOver();
-
-  }
-
+  
   @Override
   public void addToLength(int add)
   {
     super.addToLength(add);
 
-    area.changeSize(0, add);
+    ((ModRectangle) area).changeSize(0, add);
   }
 
-  public void extendUp(int extendBy)
+  public void extendForward(int dx, int dy)
   {
-    addToLength(extendBy);
-    upArrow.move(0, extendBy);
+    addToLength(dy);
+    forwardArrow.move(0, dy);
   }
 
-  public void extendDown(int extendBy)
+  public void extendBackward(int dx, int dy)
   {
-    addToLength(extendBy);
-    moveBy(0, -extendBy);
-    upArrow.move(0, extendBy);
+    addToLength(dy);
+    moveBy(0, -dy);
+    forwardArrow.move(0, dy);
 
   }
   
-  @Override
-  public void moveBy(int dx, int dy)
+  public boolean canExtendForward(int dx, int dy)
   {
-    super.moveBy(dx, dy);
-    upArrow.move(dx, dy);
-    downArrow.move(dx, dy);
+    ModRectangle newLocation = AreaUtilities.grow((ModRectangle) area, 
+        0, 0, dy, 0);
+
+    return (dy != 0 && 
+        canBeExtendedBy(dy)
+        && !Editor.level().willOverlapOtherObjectExcludeSelf(newLocation, 
+            this));
   }
-
-  @Override
-  public boolean userHoveringOverAGrabber()
+  
+  public boolean canExtendBackward(int dx, int dy)
   {
-    return userHoveringOverUpperGrabber() || userHoveringOverLowerGrabber();
-  }
+        
+    ModRectangle newLocation = AreaUtilities.grow((ModRectangle) area, 
+        0, 0, 0, dy);
 
-  public GrabArrow getGrabberBeingHoveredOver()
-  {
-    if (userHoveringOverUpperGrabber())
-      return upArrow;
 
-    if (userHoveringOverLowerGrabber())
-      return downArrow;
-
-    throw new RuntimeException("Pre-condition unmet: no grabber being"
-        + " hovered over");
+    return (dy != 0 && 
+        canBeExtendedBy(dy)
+        && !Editor.level().willOverlapOtherObjectExcludeSelf(newLocation, 
+            this));
   }
   
   public int maxLength()

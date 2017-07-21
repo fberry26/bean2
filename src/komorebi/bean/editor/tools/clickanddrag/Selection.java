@@ -1,12 +1,13 @@
 package komorebi.bean.editor.tools.clickanddrag;
 
 import java.awt.Point;
-import java.awt.Rectangle;
+
+import komorebi.bean.editor.objects.utils.Shape;
 
 public interface Selection {
-  public boolean contains(Rectangle item);
+  public boolean contains(Shape item);
   public boolean contains(Point point);
-  public boolean intersects(Rectangle rect);
+  public boolean intersects(Shape rect);
   public void lockObjects();
   public void unlockObjects();
 }

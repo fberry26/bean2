@@ -7,9 +7,10 @@ import komorebi.bean.editor.attributes.Attributable;
 import komorebi.bean.editor.attributes.AttributeFactory;
 import komorebi.bean.editor.attributes.AttributeWindow;
 import komorebi.bean.editor.attributes.AttributesPackage;
-import komorebi.bean.editor.attributes.ChoiceAttribute;
-import komorebi.bean.editor.attributes.Linkable;
+import komorebi.bean.editor.attributes.buttonlink.Linkable;
+import komorebi.bean.editor.attributes.choice.ChoiceAttribute;
 import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.editor.save.IDCreator;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
@@ -17,6 +18,7 @@ public class Treadmill extends HorizontalExtendableObject
   implements Attributable, Linkable {
   
   private AttributesPackage attributes;
+  private String id;
 
   public Treadmill(PaletteItem origin)
   {
@@ -29,6 +31,8 @@ public class Treadmill extends HorizontalExtendableObject
 
     length = 2;
     createAttributes();
+    
+    id = IDCreator.next();
   }
   
   private void createAttributes()
@@ -60,17 +64,17 @@ public class Treadmill extends HorizontalExtendableObject
 
   @Override
   public void render() {    
-    Draw.draw(Graphics.TREADMILL[Graphics.TREADMILL_L][0], modX(area.x)*16, 
-        modY(area.y)*16);
+    Draw.draw(Graphics.TREADMILL[Graphics.TREADMILL_L][0], modX(area.x())*16, 
+        modY(area.y())*16);
 
-    for (int j = area.x + 1; j < area.x + length - 1; j++)
+    for (int j = area.x() + 1; j < area.x() + length - 1; j++)
     {
       Draw.draw(Graphics.TREADMILL[Graphics.TREADMILL_C][0], 
-          modX(j)*16, modY(area.y)*16);
+          modX(j)*16, modY(area.y())*16);
     }
 
     Draw.draw(Graphics.TREADMILL[Graphics.TREADMILL_R][0], 
-        modX(area.x+length-1)*16, modY(area.y)*16);
+        modX(area.x()+length-1)*16, modY(area.y())*16);
         
   }
 
@@ -83,5 +87,15 @@ public class Treadmill extends HorizontalExtendableObject
   public String getName() {
     return "Treadmill";
   }
+  
+  public String getID() {
+    return id;
+  }
+  
+  public ModRectangle getArea()
+  {
+    return (ModRectangle) area;
+  }
+  
 
 }

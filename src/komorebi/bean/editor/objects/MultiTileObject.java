@@ -1,12 +1,12 @@
 package komorebi.bean.editor.objects;
 
 import komorebi.bean.editor.PaletteItem;
-import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.editor.objects.utils.Shape;
 import komorebi.bean.engine.MouseHandler;
 
 public abstract class MultiTileObject extends TileObject {
   
-  public MultiTileObject(PaletteItem origin, ModRectangle area) {
+  public MultiTileObject(PaletteItem origin, Shape area) {
     super(origin, area);
   }
   
@@ -25,7 +25,7 @@ public abstract class MultiTileObject extends TileObject {
   
   public int getRightmostTileX()
   {
-    return horizontal?area.x+length-1:area.x; 
+    return horizontal?area.x()+length-1:area.x(); 
   }
   
   public boolean containsMouse()

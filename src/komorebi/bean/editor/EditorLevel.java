@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import komorebi.bean.editor.attributes.Linkable;
+import komorebi.bean.editor.attributes.buttonlink.Linkable;
 import komorebi.bean.editor.objects.ExtendableObject;
 import komorebi.bean.editor.objects.MultiTileObject;
 import komorebi.bean.editor.objects.OnePerLevelObject;
 import komorebi.bean.editor.objects.SingleTileObject;
 import komorebi.bean.editor.objects.TileObject;
-import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.editor.objects.utils.Shape;
 import komorebi.bean.editor.tools.clickanddrag.Selection;
 
 public class EditorLevel {
@@ -113,7 +113,7 @@ public class EditorLevel {
     throw new RuntimeException("No object found at " + location);
   }
 
-  public boolean willOverlapOtherObject(ModRectangle rectangle)
+  public boolean willOverlapOtherObject(Shape rectangle)
   {    
     for (TileObject obj: getTileObjects())
     {      
@@ -124,7 +124,7 @@ public class EditorLevel {
     return false;
   }
   
-  public boolean willOverlapOtherObjectExcludeSelf(ModRectangle rectangle,
+  public boolean willOverlapOtherObjectExcludeSelf(Shape rectangle,
       TileObject self)
   {
     for (TileObject obj: getTileObjects())

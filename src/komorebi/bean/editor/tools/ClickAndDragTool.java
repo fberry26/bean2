@@ -56,7 +56,7 @@ public class ClickAndDragTool extends Tool {
         
     grabber.anchor(MouseHandler.getTx(), MouseHandler.getTy());
     grabber.startGrabbing(hoveringOver, 
-        hoveringOver.getGrabberBeingHoveredOver()); 
+        hoveringOver.isUserHoveringOverForwardGrabber()); 
   }
   
   private void handleDrags()
@@ -103,7 +103,7 @@ public class ClickAndDragTool extends Tool {
   {
     for (ExtendableObject obj: level.getExtendableObjects())
     {
-      if (obj.userHoveringOverAGrabber())
+      if (obj.isUserHoveringOverAGrabber())
         return true;
     }
     

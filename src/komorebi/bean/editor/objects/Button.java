@@ -4,7 +4,7 @@ import komorebi.bean.editor.PaletteItem;
 import komorebi.bean.editor.attributes.Attributable;
 import komorebi.bean.editor.attributes.AttributeWindow;
 import komorebi.bean.editor.attributes.AttributesPackage;
-import komorebi.bean.editor.attributes.ButtonLinkAttribute;
+import komorebi.bean.editor.attributes.buttonlink.ButtonLinkAttribute;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
 
