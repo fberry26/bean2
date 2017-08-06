@@ -2,30 +2,27 @@ package komorebi.bean.editor.objects;
 
 import java.awt.Rectangle;
 
+import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.PaletteItem;
-import komorebi.bean.editor.objects.utils.ModPath;
-import komorebi.bean.editor.objects.utils.ModPathRectangle;
+import komorebi.bean.editor.objects.platform.ModPath;
+import komorebi.bean.editor.objects.platform.ModPathRectangle;
 import komorebi.bean.editor.objects.utils.ModRectangle;
-import komorebi.bean.editor.tools.clickanddrag.HorizontalGrabArrow;
+import komorebi.bean.editor.tools.clickanddrag.InvisibleGrabArrow;
 import komorebi.bean.game.Tile;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 import komorebi.bean.graphics.Image;
+import komorebi.bean.graphics.PlatformPath;
 
 public class Platform extends ExtendableObject {
 
   private static final Image PATH_RED_FILL = new Image(100, 32, 1, 1,
       Draw.MISCELLANY);
-  private static final Image ARROW_HEAD = new Image(174, 17, 16, 16,
-      Draw.MISCELLANY);
-  private static final Image ARROW_STRAIGHT = new Image(158, 17, 16, 16,
-      Draw.MISCELLANY);
-  private static final Image ARROW_TURN = new Image(142, 17, 16, 16,
-      Draw.MISCELLANY);
   
   private int offset;
   
   private ModRectangle platformArea;
+  private PlatformPath pathDrawing;
   
   public Platform(PaletteItem origin)
   {
@@ -36,10 +33,12 @@ public class Platform extends ExtendableObject {
   {
     super(origin, new ModPath(
         ModPathRectangle.convertToPathRectangle(area)), 
-        HorizontalGrabArrow.createRightArrow(area),
-        HorizontalGrabArrow.createLeftArrow(area));
+        InvisibleGrabArrow.createForwardArrow(area),
+        InvisibleGrabArrow.createBackwardArrow(area));
     
     this.platformArea = area;
+    pathDrawing = new PlatformPath((ModPath) this.area);
+    
   }
 
   @Override
@@ -54,8 +53,8 @@ public class Platform extends ExtendableObject {
     Draw.draw(Graphics.PLATFORM[Graphics.PLATFORM_R][Tile.getColor()], 
         modX(platformArea.x()+offset+1)*16, modY(platformArea.y())*16);
 
-    
-    for (ModRectangle component: (ModRectangle[]) area.getComponentRectangles())
+    for (ModRectangle component: 
+      (ModRectangle[]) area.getComponentRectangles())
     {
       for (Rectangle rect: component.getComponentRectangles())
       {
@@ -64,28 +63,50 @@ public class Platform extends ExtendableObject {
       }
     }
     
+    pathDrawing.render();
+    
   }
 
   @Override
   public void extendForward(int dx, int dy) {
-    ((ModPath) area).addToPath(dx, dy);
+    ((ModPath) area).addToEnd(dx, dy);
+    forwardArrow.move(dx, dy);
+    ((InvisibleGrabArrow) forwardArrow).realign(
+        ((ModPath) area).getLastDirection());
     
   }
 
   @Override
   public void extendBackward(int dx, int dy) {
-    // TODO Auto-generated method stub
-    
+    ((ModPath) area).addToBeginning(-dx, -dy);    
+    backwardArrow.move(-dx, -dy);
+    ((InvisibleGrabArrow) backwardArrow).realign(
+        ((ModPath) area).getFirstDirection().getOpposite());
   }
 
   @Override
   public boolean canExtendForward(int dx, int dy) {
-    return dx != 0 ^ dy != 0;
+    
+    ModPathRectangle rect = 
+        ((ModPath) area).getAdditionToPath(dx, dy, false);
+    
+    return (dx != 0 ^ dy != 0) &&
+        !Editor.level().willOverlapOtherObjectExcludeSelf(rect, this)
+        && !((ModPath) area).doesMotionContradictArrowDirection(dx, dy, 
+            false);
   }
 
   @Override
   public boolean canExtendBackward(int dx, int dy) {
-    return false;
+    dx = -dx;
+    dy = -dy;
+    
+    ModPathRectangle rect = 
+        ((ModPath) area).getAdditionToPath(dx, dy, true);
+    
+    return (dx != 0 ^ dy != 0) &&
+        !Editor.level().willOverlapOtherObjectExcludeSelf(rect, this)
+        && !((ModPath) area).doesMotionContradictArrowDirection(dx, dy, true);
   }
 
 }

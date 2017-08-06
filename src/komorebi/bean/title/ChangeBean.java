@@ -70,10 +70,10 @@ public class ChangeBean implements State {
     
     for (int i = 0; i <= PINK_BEAN; i++)
     {
-      Draw.rect(8+i*46, 120, 12, 16, i*12, 0, 2, Draw.SPREADSHEET);
+      Draw.draw(Graphics.BEAN[i], 8+i*46, 120, 2);
     }
     
-    Draw.draw(Graphics.ARROW, 9+(int) arrowAt*46, 90, 2, Draw.ROTATE_NONE);
+    Draw.draw(Graphics.ARROW, 9+(int) arrowAt*46, 90, 2);
   }
 
   @Override

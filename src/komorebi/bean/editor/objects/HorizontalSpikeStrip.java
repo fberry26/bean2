@@ -3,6 +3,7 @@ package komorebi.bean.editor.objects;
 import komorebi.bean.editor.PaletteItem;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
@@ -36,17 +37,24 @@ public class HorizontalSpikeStrip extends HorizontalExtendableObject {
   public void render() {    
     if (length == 1)
     {
-      Draw.draw(Graphics.SPIKES[Graphics.SPIKE_ALONE][Tile.getColor()],
-          area.x()*16, area.y()*16, upsideDown?Draw.ROTATE_180:Draw.ROTATE_NONE, 
-              false);
+      if (upsideDown)
+      {
+        Draw.draw(Graphics.SPIKES[Graphics.SPIKE_ALONE][Tile.getColor()],
+            area.x()*16, area.y()*16, Transformation.ROTATE_180);
+      } else
+      {
+        Draw.draw(Graphics.SPIKES[Graphics.SPIKE_ALONE][Tile.getColor()],
+            area.x()*16, area.y()*16);
+      }
     } else
     {
       if (upsideDown)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            modX(area.x())*16, modY(area.y())*16, Draw.ROTATE_180, false);
+            modX(area.x())*16, modY(area.y())*16, Transformation.ROTATE_180);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()], 
-            modX(area.x()+length-1)*16, modY(area.y())*16, Draw.ROTATE_180, false);
+            modX(area.x()+length-1)*16, modY(area.y())*16, 
+            Transformation.ROTATE_180);
       } else
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()],
@@ -57,9 +65,16 @@ public class HorizontalSpikeStrip extends HorizontalExtendableObject {
       
       for (int i = 1; i < length - 1; i++)
       {
-        Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
-            modX(area.x()+i)*16, modY(area.y())*16, 
-            upsideDown?Draw.ROTATE_180:Draw.ROTATE_NONE, false);
+        if (upsideDown)
+        {
+          Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
+              modX(area.x()+i)*16, modY(area.y())*16, 
+              Transformation.ROTATE_180);
+        } else
+        {
+          Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
+              modX(area.x()+i)*16, modY(area.y())*16);
+        }
       }
       
       

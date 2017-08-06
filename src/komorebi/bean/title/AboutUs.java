@@ -5,6 +5,7 @@ import komorebi.bean.engine.GameHandler.State;
 import komorebi.bean.engine.GameHandler.States;
 import komorebi.bean.engine.Key;
 import komorebi.bean.engine.KeyHandler;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 import komorebi.bean.text.TextHandler;
@@ -47,7 +48,8 @@ public class AboutUs implements State {
   @Override
   public void render() {
     Draw.draw(Graphics.BLANK_TITLE_SCREEN, 0, 0);
-    Draw.draw(Graphics.ARROW, 232, 11, 1, Draw.ROTATE_CLOCKWISE);
+    Draw.draw(Graphics.ARROW, 232, 11, 1, 
+        Transformation.ROTATE_CLOCKWISE);
     
     text.render();
 

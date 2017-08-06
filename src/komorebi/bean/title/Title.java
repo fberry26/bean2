@@ -6,6 +6,7 @@ import komorebi.bean.engine.GameHandler.States;
 import komorebi.bean.engine.Key;
 import komorebi.bean.engine.KeyHandler;
 import komorebi.bean.engine.Main;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
@@ -74,16 +75,20 @@ public class Title implements State {
     switch (arrowAt)
     {
       case START: 
-        Draw.draw(Graphics.ARROW, 20, 51, 1, Draw.ROTATE_CLOCKWISE);
+        Draw.draw(Graphics.ARROW, 20, 51, 1, 
+            Transformation.ROTATE_CLOCKWISE);
         break;
       case LEVEL_EDITOR:
-        Draw.draw(Graphics.ARROW, 20, 19, 1, Draw.ROTATE_CLOCKWISE);
+        Draw.draw(Graphics.ARROW, 20, 19, 1, 
+            Transformation.ROTATE_CLOCKWISE);
         break;
       case CHANGE_BEAN:
-        Draw.draw(Graphics.ARROW, 180, 51, 1, Draw.ROTATE_CLOCKWISE);
+        Draw.draw(Graphics.ARROW, 180, 51, 1,
+            Transformation.ROTATE_CLOCKWISE);
         break;
       case ABOUT_US:
-        Draw.draw(Graphics.ARROW, 180, 19, 1, Draw.ROTATE_CLOCKWISE);
+        Draw.draw(Graphics.ARROW, 180, 19, 1, 
+            Transformation.ROTATE_CLOCKWISE);
         break;
       default: break;
     }

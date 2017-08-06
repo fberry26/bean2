@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.editor.tools.clickanddrag.GrabArrow;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
@@ -16,10 +17,10 @@ public class VerticalGrabArrow extends GrabArrow {
 
   @Override
   public void render() {
-    int rotation = (isForward())?Draw.ROTATE_COUNTERCLOCKWISE:
-      Draw.ROTATE_CLOCKWISE;
+    Transformation rotation = (isForward())?Transformation.ROTATE_COUNTERCLOCKWISE:
+      Transformation.ROTATE_CLOCKWISE;
     
-    Draw.draw(Graphics.EXPAND_ARROW, area.x, area.y, rotation, false);
+    Draw.draw(Graphics.EXPAND_ARROW, area.x, area.y, rotation);
   }
   
   public static VerticalGrabArrow createUpArrow(Rectangle objLoc)

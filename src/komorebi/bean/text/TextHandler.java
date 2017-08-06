@@ -105,12 +105,19 @@ public class TextHandler {
 
     for (int i=0; i < letters.length; i++)
     {
-      Draw.rect(horiz, vert, word.getFont().getLength(letters[i]),
-          word.getFont().getTexSy(letters[i]),
-          word.getFont().getTexX(letters[i]), word.getFont().getTexY(letters[i]),
-          word.getFontSize(),  
+      int texx = word.getFont().getTexX(letters[i]),
+          texy = word.getFont().getTexY(letters[i]),
+          texsx = word.getFont().getLength(letters[i]),
+          texsy = word.getFont().getTexSy(letters[i]);
+      
+      float scale = word.getFontSize();
+          
+      
+      
+      Draw.rect(horiz, vert, texsx * scale, texsy * scale,
+          texx, texy, texsx + texx,  texsy + texy,
           word.getFont().getTexture());
-      horiz+=(word.getFont().getLength(letters[i])*word.getFontSize()+1);
+      horiz+=texsx*scale+1;
 
 
     }

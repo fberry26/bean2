@@ -3,6 +3,7 @@ package komorebi.bean.editor.objects;
 import komorebi.bean.editor.PaletteItem;
 import komorebi.bean.editor.objects.utils.ModRectangle;
 import komorebi.bean.game.Tile;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
@@ -16,7 +17,8 @@ public class VerticalSpikeStrip extends VerticalExtendableObject {
     this.pointsLeft = pointsLeft;
   }
   
-  public VerticalSpikeStrip(PaletteItem origin, ModRectangle area, boolean pointsLeft)
+  public VerticalSpikeStrip(PaletteItem origin, ModRectangle area, 
+      boolean pointsLeft)
   {
     super(origin, area);
     this.pointsLeft = pointsLeft;
@@ -40,29 +42,32 @@ public class VerticalSpikeStrip extends VerticalExtendableObject {
     {
       Draw.draw(Graphics.SPIKES[Graphics.SPIKE_ALONE][Tile.getColor()],
           area.x()*16, area.y()*16, 
-          pointsLeft?Draw.ROTATE_COUNTERCLOCKWISE:Draw.ROTATE_CLOCKWISE, 
-              false);
+          pointsLeft?Transformation.ROTATE_COUNTERCLOCKWISE:
+            Transformation.ROTATE_CLOCKWISE);
     } else
     {
       if (pointsLeft)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            area.x()*16, area.y()*16, Draw.ROTATE_COUNTERCLOCKWISE, false);
+            area.x()*16, area.y()*16, Transformation.ROTATE_COUNTERCLOCKWISE);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()], 
-            (area.x())*16, (area.y()-length+1)*16, Draw.ROTATE_COUNTERCLOCKWISE, false);
+            (area.x())*16, (area.y()-length+1)*16, 
+            Transformation.ROTATE_COUNTERCLOCKWISE);
       } else
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_L][Tile.getColor()],
-            area.x()*16, area.y()*16, Draw.ROTATE_CLOCKWISE, false);
+            area.x()*16, area.y()*16, Transformation.ROTATE_CLOCKWISE);
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_R][Tile.getColor()],
-            (area.x())*16, (area.y()-length+1)*16, Draw.ROTATE_CLOCKWISE, false);
+            (area.x())*16, (area.y()-length+1)*16, 
+            Transformation.ROTATE_CLOCKWISE);
       }
       
       for (int i = 1; i < length - 1; i++)
       {
         Draw.draw(Graphics.SPIKES[Graphics.SPIKE_C][Tile.getColor()],
-            (area.x())*16, (area.y()-i)*16, pointsLeft?Draw.ROTATE_COUNTERCLOCKWISE:
-              Draw.ROTATE_CLOCKWISE, false);
+            (area.x())*16, (area.y()-i)*16, 
+            pointsLeft?Transformation.ROTATE_COUNTERCLOCKWISE:
+              Transformation.ROTATE_CLOCKWISE);
       }
     }
     

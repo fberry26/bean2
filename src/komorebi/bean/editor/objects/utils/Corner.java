@@ -2,7 +2,7 @@ package komorebi.bean.editor.objects.utils;
 
 import java.awt.Point;
 
-import komorebi.bean.editor.objects.utils.ModPath.PathDirection;
+import komorebi.bean.editor.objects.platform.PathDirection;
 
 public class Corner extends Point {
 
@@ -34,6 +34,28 @@ public class Corner extends Point {
     public static CornerLocation cornerOf(PathDirection dir1, PathDirection dir2)
     {
       PathDirection vert, horiz;
+     
+      if (dir1 == dir2 || dir1.isOpposite(dir2))
+      {
+        if (dir1.isVertical())
+        {
+          dir2 = PathDirection.LEFT;
+        } else 
+        {
+          dir1 = PathDirection.DOWN;
+        }
+      }
+      
+      if (dir1 == PathDirection.ANY)
+      {
+        if (dir2.isVertical())
+        {
+          dir1 = PathDirection.LEFT;
+        } else
+        {
+          dir1 = PathDirection.DOWN;
+        }
+      }
       
       if (dir1.isVertical())
       {

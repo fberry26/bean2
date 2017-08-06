@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 
 import komorebi.bean.editor.Editor;
 import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 
@@ -31,7 +32,14 @@ public class HorizontalGrabArrow extends GrabArrow {
 
   @Override
   public void render() {
-    Draw.draw(Graphics.EXPAND_ARROW, area.x, area.y, 0, !isForward());
+    if (isForward())
+    {
+      Draw.draw(Graphics.EXPAND_ARROW, area.x, area.y);
+    } else
+    {
+      Draw.draw(Graphics.EXPAND_ARROW, area.x, area.y,
+          Transformation.REFLECT_ACROSS_X);
+    }
     
   }
   

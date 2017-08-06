@@ -22,9 +22,9 @@ public class SelectionAnimation {
   public SelectionAnimation()
   {
     blackFirstHoriz.add(row16);
-    blackFirstHoriz.add(row16, true);
+    blackFirstHoriz.add(row16, Transformation.REFLECT_ACROSS_X);
 
-    whiteFirstHoriz.add(row16, true);
+    whiteFirstHoriz.add(row16, Transformation.REFLECT_ACROSS_X);
     whiteFirstHoriz.add(row16);
 
     blackFirstShortVert.add(row14MoreBlack);
@@ -33,11 +33,11 @@ public class SelectionAnimation {
     whiteFirstShortVert.add(row14MoreWhite);
     whiteFirstShortVert.add(row14MoreBlack);
 
-    blackFirstLongVert.add(row16, Draw.ROTATE_CLOCKWISE);
-    blackFirstLongVert.add(row16, Draw.ROTATE_COUNTERCLOCKWISE);
+    blackFirstLongVert.add(row16, Transformation.ROTATE_CLOCKWISE);
+    blackFirstLongVert.add(row16, Transformation.ROTATE_COUNTERCLOCKWISE);
 
-    whiteFirstLongVert.add(row16, Draw.ROTATE_COUNTERCLOCKWISE);
-    whiteFirstLongVert.add(row16, Draw.ROTATE_CLOCKWISE);
+    whiteFirstLongVert.add(row16, Transformation.ROTATE_COUNTERCLOCKWISE);
+    whiteFirstLongVert.add(row16, Transformation.ROTATE_CLOCKWISE);
 
   }
 

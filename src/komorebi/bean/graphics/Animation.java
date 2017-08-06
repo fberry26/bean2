@@ -12,15 +12,12 @@ package komorebi.bean.graphics;
  */
 public class Animation {
 
-  private int frames;
   private int time;
   private int counter;
 
   private int scale;
 
-  private Image[] images;
-  private int[] rot;
-  private boolean[] flipped;
+  private Frame[] frames;
   private int currFrame;
   private int cAddFrame;
   private boolean playing = true;
@@ -33,10 +30,7 @@ public class Animation {
     this.scale = scale;
     onlyOnce = !loop;
 
-    frames = f;
-    images = new Image[frames];
-    rot = new int[frames];
-    flipped = new boolean[frames];
+    frames = new Frame[f];
     time = t;
 
   }
@@ -77,27 +71,15 @@ public class Animation {
 
 
 
-  public void add(Image image, int rot, boolean flip)
+  public void add(Image image, Transformation...alterations)
   {
-    this.images[cAddFrame] = image;
-    this.rot[cAddFrame] = rot;
-    flipped[cAddFrame] = flip;
+    frames[cAddFrame] = new Frame(image, alterations);
     cAddFrame++;
-  }
-
-  public void add(Image image, int rot)
-  {
-    add(image, rot, false);
-  }
-
-  public void add(Image image, boolean flip)
-  {
-    add(image, Draw.ROTATE_NONE, flip);
   }
 
   public void add(Image image)
   {
-    add(image, Draw.ROTATE_NONE, false);
+    add(image, new Transformation[0]);
   }
   
   public void update()
@@ -120,8 +102,8 @@ public class Animation {
   
   public void renderNoIncrement(float x, float y)
   {
-    Draw.draw(images[currFrame], x, y, scale, rot[currFrame], 
-        flipped[currFrame]);
+    Draw.draw(frames[currFrame].getImage(), x, y, scale, 
+        frames[currFrame].getAlterations());
   }
 
   /*
@@ -134,7 +116,7 @@ public class Animation {
       if(counter > time){
         counter = 0;
         currFrame++;
-        if(currFrame >= frames){
+        if(currFrame >= frames.length){
           if (onlyOnce)
           {
             hStop();
@@ -191,7 +173,7 @@ public class Animation {
    */
   public boolean lastFrame()
   {
-    return (currFrame == frames - 1);
+    return (currFrame == frames.length - 1);
   }
 
   public void reset()

@@ -6,6 +6,7 @@ import static komorebi.bean.graphics.Graphics.RED;
 
 import java.awt.Point;
 
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
 import komorebi.bean.graphics.Image;
@@ -15,10 +16,11 @@ public enum Tile {
   BLOCK(Graphics.SQUARES[RED]), BEAN(Graphics.BEAN[RED]), 
   FLAG(Graphics.FLAG, new Point(2, 0)), 
   BUTTON(Graphics.BUTTONS[BUTTON_UP][RED], new Point(4, 0)), 
-  TURRET_LEFT(Graphics.TURRET), TURRET_RIGHT(Graphics.TURRET, true),
+  TURRET_LEFT(Graphics.TURRET), TURRET_RIGHT(Graphics.TURRET, 
+      Transformation.REFLECT_ACROSS_Y),
   GATE_VERT(Graphics.GATE[GATE_UP][RED], new Point(6, 0)), 
   GATE_HORIZ(Graphics.GATE[GATE_UP][RED],
-      Draw.ROTATE_CLOCKWISE, new Point(0, 6)),
+      new Point(0, 6), Transformation.ROTATE_CLOCKWISE),
   LADDER(Graphics.LADDER[RED]), 
   PISTON_MID(Graphics.PISTON[Graphics.PISTON_MID][RED]),
   TREADMILL_L(Graphics.TREADMILL[Graphics.TREADMILL_L][0]), 
@@ -30,29 +32,29 @@ public enum Tile {
   SPIKE_R_UP(Graphics.SPIKES[Graphics.SPIKE_R][RED]), 
   SPIKE_ALONE_UP(Graphics.SPIKES[Graphics.SPIKE_ALONE][RED]),
   SPIKE_L_RIGHT(Graphics.SPIKES[Graphics.SPIKE_L][RED], 
-      Draw.ROTATE_CLOCKWISE), 
+     Transformation.ROTATE_CLOCKWISE), 
   SPIKE_C_RIGHT(Graphics.SPIKES[Graphics.SPIKE_C][RED], 
-      Draw.ROTATE_CLOCKWISE), 
+      Transformation.ROTATE_CLOCKWISE), 
   SPIKE_R_RIGHT(Graphics.SPIKES[Graphics.SPIKE_R][RED], 
-      Draw.ROTATE_CLOCKWISE), 
+      Transformation.ROTATE_CLOCKWISE), 
   SPIKE_ALONE_RIGHT(Graphics.SPIKES[Graphics.SPIKE_ALONE][RED], 
-      Draw.ROTATE_CLOCKWISE),
+      Transformation.ROTATE_CLOCKWISE),
   SPIKE_L_DOWN(Graphics.SPIKES[Graphics.SPIKE_L][RED], 
-      Draw.ROTATE_180), 
+      Transformation.ROTATE_180), 
   SPIKE_C_DOWN(Graphics.SPIKES[Graphics.SPIKE_C][RED], 
-      Draw.ROTATE_180), 
+      Transformation.ROTATE_180), 
   SPIKE_R_DOWN(Graphics.SPIKES[Graphics.SPIKE_R][RED], 
-      Draw.ROTATE_180), 
+      Transformation.ROTATE_180), 
   SPIKE_ALONE_DOWN(Graphics.SPIKES[Graphics.SPIKE_ALONE][RED], 
-      Draw.ROTATE_180),
+      Transformation.ROTATE_180),
   SPIKE_L_LEFT(Graphics.SPIKES[Graphics.SPIKE_L][RED], 
-      Draw.ROTATE_COUNTERCLOCKWISE), 
+      Transformation.ROTATE_COUNTERCLOCKWISE), 
   SPIKE_C_LEFT(Graphics.SPIKES[Graphics.SPIKE_C][RED], 
-      Draw.ROTATE_COUNTERCLOCKWISE), 
+      Transformation.ROTATE_COUNTERCLOCKWISE), 
   SPIKE_R_LEFT(Graphics.SPIKES[Graphics.SPIKE_R][RED], 
-      Draw.ROTATE_COUNTERCLOCKWISE), 
+      Transformation.ROTATE_COUNTERCLOCKWISE), 
   SPIKE_ALONE_LEFT(Graphics.SPIKES[Graphics.SPIKE_ALONE][RED], 
-      Draw.ROTATE_COUNTERCLOCKWISE),
+      Transformation.ROTATE_COUNTERCLOCKWISE),
   PLATFORM_LEFT_HORIZ(Graphics.PLATFORM[Graphics.PLATFORM_L][RED], new Point(6,0)), 
   PLATFORM_RIGHT_HORIZ(Graphics.PLATFORM[Graphics.PLATFORM_R][RED]),
   PLATFORM_LEFT_VERT(Graphics.PLATFORM[Graphics.PLATFORM_L][RED], new Point(6,0)), 
@@ -60,43 +62,33 @@ public enum Tile {
   BLANK(null);
   
   private Image image;
-  private boolean flip;
-  private int rot;
+  
+  private Transformation[] alterations;
+  
   private Point offset;
   
   private Tile(Image image)
   {
-    this(image, Draw.ROTATE_NONE, false);
+    this(image, new Transformation[0]);
   }
   
-  private Tile(Image image, boolean flip)
-  {
-    this(image, Draw.ROTATE_NONE, flip);
-  }
-  
-  private Tile(Image image, int rot)
-  {
-    this(image, rot, false);
-  }
-  
-  private Tile(Image image, int rot, boolean flip)
+  private Tile(Image image, Transformation...alterations)
   {
     this.image = image;
-    this.rot = rot;
-    this.flip = flip;
+    this.alterations = alterations;
     
-    offset = new Point(0, 0);
+    offset = new Point(0,0);
   }
   
   private Tile(Image image, Point offset)
   {
-    this(image, Draw.ROTATE_NONE, false);
+    this(image);
     this.offset = offset;
   }
   
-  private Tile (Image image, int rot, Point offset)
+  private Tile (Image image, Point offset, Transformation...alterations)
   {
-    this(image, rot, false);
+    this(image, alterations);
     this.offset = offset;
   }
   
@@ -184,15 +176,6 @@ public enum Tile {
     return image;
   }
   
-  public boolean isFlipped()
-  {
-    return flip;
-  }
-  
-  public int getRotation()
-  {
-    return rot;
-  }
   
   public static int getColor()
   {
@@ -201,6 +184,6 @@ public enum Tile {
   
   public void drawTile(int x, int y)
   {
-    Draw.draw(image, x+offset.x, y+offset.y, rot, flip);
+    Draw.draw(image, x+offset.x, y+offset.y, alterations);
   }
 }

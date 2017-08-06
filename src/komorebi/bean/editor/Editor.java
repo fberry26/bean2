@@ -16,8 +16,10 @@ import komorebi.bean.engine.KeyHandler;
 import komorebi.bean.engine.Main;
 import komorebi.bean.engine.MouseHandler;
 import komorebi.bean.game.Tile;
+import komorebi.bean.graphics.Transformation;
 import komorebi.bean.graphics.Draw;
 import komorebi.bean.graphics.Graphics;
+import komorebi.bean.graphics.Image;
 
 public class Editor implements State {
   
@@ -35,6 +37,9 @@ public class Editor implements State {
   public static final Dimension TILE_MODSPACE = new Dimension(20, 16);
   public static final Dimension MODSPACE = new Dimension(320, 256);
   private static MultiSelection selection = new MultiSelection();
+  
+  private static final Image TEST_IMAGE = new Image(224, 0, 32, 16,
+      Draw.MISCELLANY);
   
   public Editor()
   {
@@ -107,7 +112,7 @@ public class Editor implements State {
     if (onButtons())
     {
       Draw.draw(Graphics.BUTTON_HOVER_SQUARE, MouseHandler.getTx()*16, MAP_HT*16,
-          0.5f, 0);
+          0.5f);
     }
     
     palette.render();
@@ -130,7 +135,7 @@ public class Editor implements State {
     {
       for (int j = 0; j < MAP_WIDTH; j++)
       {
-        Draw.draw(Graphics.GRID, j*16, i*16, 1, 0);
+        Draw.draw(Graphics.GRID, j*16, i*16, 1);
       }
     }
   }

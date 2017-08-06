@@ -27,7 +27,8 @@ import java.io.FileInputStream;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import komorebi.bean.editor.objects.utils.ModRectangle;
+import komorebi.bean.graphics.Transformation.TransformationSeries;
+import komorebi.bean.graphics.mod.loop.ImageSplitter;
 
 /**
  * Draws stuff. :D
@@ -35,9 +36,6 @@ import komorebi.bean.editor.objects.utils.ModRectangle;
  * @author Aaron Roy
  */
 public class Draw {
-
-  public static final int ROTATE_NONE = 0, ROTATE_COUNTERCLOCKWISE = 1, 
-      ROTATE_180 = 2, ROTATE_CLOCKWISE = 3;
 
   /** To ensure rotations can only happen in multiples of 90 degrees.*/
   private static final int RIGHT_ANGLE = 90;
@@ -96,26 +94,37 @@ public class Draw {
    * @param texID see {@link Draw#loadTextures() loadTextures}
    */
   private static void rect(float x, float y, float sx, float sy, int texx, 
-      int texy, int texsx, int texsy, int angle, boolean flip, int texID) {
+      int texy, int texsx, int texsy, int texID, 
+      Transformation[] transformations) {
     int actualX = (int) x;
     int actualY = (int) y;
-
-    if (flip)
+    
+    TransformationSeries series = 
+        Transformation.consolidate(transformations);
+    
+    if (series.flipX())
     {
       int temp = texx;
       texx = texsx;
       texsx = temp;
     }
-
-    switch (angle)
+    
+    if (series.flipY())
+    { 
+      int temp = texy;
+      texy = texsy;
+      texsy = temp;
+    }
+    
+    switch (series.getAngle())
     {
-      case ROTATE_CLOCKWISE:
+      case 3:
         actualY += (int) sx;
         break;
-      case ROTATE_COUNTERCLOCKWISE:
+      case 1:
         actualX += (int) sy;
         break;
-      case ROTATE_180:
+      case 2:
         actualX += (int) sx;
         actualY += (int) sy;
         break;
@@ -137,7 +146,7 @@ public class Draw {
       }
 
       glTranslatef((int) actualX, (int) actualY, 0);
-      glRotatef(angle * RIGHT_ANGLE, 0.0f, 0.0f, 1.0f);
+      glRotatef(series.getAngle() * RIGHT_ANGLE, 0.0f, 0.0f, 1.0f);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -163,107 +172,62 @@ public class Draw {
     glPopMatrix();
 
   }
-
-
-  /**
-   * 
-   * @param image The image to be drawn on screen
-   * @param x The x location of the bottom left corner
-   * @param y The y location of the bottom left corner
-   * @param scale The scale of the image
-   * @param angle The angle to rotate
-   */
-  public static void draw(Image image, float x, float y, float scale, 
-      int angle)
+  
+  public static void rect(float x, float y, float sx, float sy, int texx, 
+      int texy, int texsx, int texsy, int texID)
   {
-
-    draw(image, x, y, scale, angle, false);
+    rect(x, y, sx, sy, texx, texy, texsx, texsy, texID,
+        new Transformation[0]);
   }
-
-  /**
-   * 
-   * @param image The image to be drawn on screen
-   * @param x The x location of the bottom left corner
-   * @param y The y location of the bottom left corner
-   * @param scale The scale of the image
-   * @param angle The angle to rotate
-   */
-  public static void draw(Image image, float x, float y)
+  
+  public static void draw(Image image, float x, float y, float scale,
+      Transformation...alterations)
   {
-
-    draw(image, x, y, 1, 0, false);
+    rect(x, y, image.getWidth()*scale, image.getHeight()*scale,
+        image.getTexX(), image.getTexY(),
+        image.getTexX()+image.getWidth(),
+        image.getTexY()+image.getHeight(), image.getTexture(),
+        alterations);
   }
-
-  public static void draw(Image image, float x, float y, float scale, 
-      int angle, boolean flip)
+  
+  public static void draw(Image image, float x, float y, Transformation...alterations)
   {
-
-    rect(x, y, image.getWidth()*scale, image.getHeight()*scale, 
-        image.getTexX(), image.getTexY(), 
-        image.getTexX()+image.getWidth(), 
-        image.getTexY()+image.getHeight(), angle, flip,
-        image.getTexture()); 
-  }
-
-  public static void draw(Image image, float x, float y,
-      int angle, boolean flip)
-  {
-
-    draw(image, x, y, 1, angle, flip);
-  }
-
-  public static void rect(float x, float y, int sx, int sy, 
-      int texx, int texy, float scale, int texID)
-  {
-    rect(x, y, sx*scale, sy*scale, texx, texy, texx+sx, texy+sy, 0, 
-        false, texID);
-  }
-
-  public static void draw(Image image, float x, float y, float scale)
-  {
-    draw(image, x, y, scale, 0, false);
+    draw(image, x, y, 1, alterations);
   }
 
   public static void drawMod(Image image, float x, float y, 
-      int angle, boolean flip, Dimension modSpace)
+      Dimension modSpace, Transformation...alterations)
+  { 
+    ImageSplitter splitter = new ImageSplitter(image,
+        x, y, modSpace, alterations);
+    
+    Image[] images = splitter.getImages();
+    Rectangle[] rects = splitter.getRectangles();
+    
+    for (int i = 0; i < images.length; i++)
+    {
+      Draw.draw(images[i], rects[i].x, 
+          rects[i].y, alterations);
+    }
+  }
+  
+  public static void drawMod(Frame frame, float x, float y, 
+      Dimension modSpace)
   {
-    ModRectangle rect;
-    
-    if (angle % 2 == 0)
-    {
-      rect = new ModRectangle((int) x, (int) y, 
-          (int) (image.getWidth()), (int) 
-          (image.getHeight()), modSpace);
-    } else
-    {
-      rect = new ModRectangle((int) x, (int) y, 
-          (int) (image.getHeight()), (int) 
-          (image.getWidth()), modSpace);
-    }
-    
-    ImageSplitter split = new ImageSplitter(image, 
-        rect.getComponentRectangles(), 0, false);
-    
-    for (int i = 0; i < split.getImages().length; i++)
-    {
-      Draw.draw(split.getImages()[i], rect.getComponentRectangles()[i].x, 
-          rect.getComponentRectangles()[i].y, angle, flip);
-    }
-
-
-
-    for (Rectangle comp: rect.getComponentRectangles())
-    {
-      Draw.fill(Graphics.BLUE_SELECTED_FUNCTION, comp.x, comp.y, 
-          comp.width, comp.height);
-    }
+    drawMod(frame.getImage(), x, y, modSpace, frame.getAlterations());
+  }
+  
+  public static void draw(Frame frame, float x, float y)
+  {
+    draw(frame.getImage(), x, y, frame.getAlterations());
   }
 
   public static void fill(Image image, float x, float y, int sx, int sy)
   {
     rect(x, y, sx, sy, image.getTexX(), image.getTexY(), 
         image.getTexX()+image.getWidth(),
-        image.getTexY()+image.getHeight(), 0, false, image.getTexture());
+        image.getTexY()+image.getHeight(), image.getTexture(),
+        new Transformation[0]);
   }
 
 }
